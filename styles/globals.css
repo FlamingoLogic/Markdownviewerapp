@@ -1,0 +1,185 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Inter font for modern feel */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Dark theme base styles */
+html {
+  @apply dark;
+}
+
+body {
+  @apply bg-dark-950 text-slate-100 font-sans antialiased;
+  @apply selection:bg-primary-600/30 selection:text-primary-200;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-600;
+}
+
+/* Custom components */
+@layer components {
+  /* Modern button styles */
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-dark-950;
+  }
+
+  .btn-secondary {
+    @apply bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-lg font-medium transition-colors duration-200 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:ring-offset-dark-950;
+  }
+
+  .btn-ghost {
+    @apply text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 px-3 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:ring-offset-dark-950;
+  }
+
+  /* Input styles for dark theme */
+  .input-primary {
+    @apply bg-slate-900/50 border border-slate-700 text-slate-100 placeholder-slate-400 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200 backdrop-blur-sm;
+  }
+
+  /* Card styles */
+  .card {
+    @apply bg-slate-900/50 border border-slate-800/50 rounded-xl backdrop-blur-sm;
+  }
+
+  .card-elevated {
+    @apply bg-slate-900/80 border border-slate-700/50 rounded-xl shadow-2xl backdrop-blur-sm;
+  }
+
+  /* Panel styles for resizable layout */
+  .panel {
+    @apply bg-slate-925 border-r border-slate-800;
+  }
+
+  .panel-content {
+    @apply h-full overflow-hidden flex flex-col;
+  }
+
+  /* Divider styles for resizable panels */
+  .panel-divider {
+    @apply w-1 bg-slate-800 hover:bg-primary-600 transition-colors duration-200 cursor-col-resize relative;
+  }
+
+  .panel-divider:hover::after {
+    content: '';
+    @apply absolute inset-0 bg-primary-500/20;
+  }
+
+  /* Sidebar styles */
+  .sidebar {
+    @apply bg-slate-925 border-r border-slate-800;
+  }
+
+  .sidebar-item {
+    @apply flex items-center px-3 py-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 rounded-lg transition-colors duration-200 cursor-pointer;
+  }
+
+  .sidebar-item.active {
+    @apply text-primary-400 bg-primary-900/30;
+  }
+
+  /* Loading spinner */
+  .spinner {
+    @apply animate-spin rounded-full border-2 border-slate-700 border-t-primary-500;
+  }
+
+  /* Status indicators */
+  .status-online {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-900/30 text-success-400 border border-success-700/30;
+  }
+
+  .status-offline {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-400 border border-slate-700;
+  }
+
+  .status-error {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-error-900/30 text-error-400 border border-error-700/30;
+  }
+}
+
+/* Markdown content styling for dark theme */
+@layer utilities {
+  .prose-dark {
+    @apply prose prose-invert prose-slate max-w-none;
+    @apply prose-headings:text-slate-100 prose-headings:font-semibold;
+    @apply prose-p:text-slate-300 prose-p:leading-relaxed;
+    @apply prose-a:text-primary-400 prose-a:no-underline hover:prose-a:text-primary-300;
+    @apply prose-strong:text-slate-200 prose-strong:font-semibold;
+    @apply prose-code:text-primary-300 prose-code:bg-slate-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-sm;
+    @apply prose-pre:bg-slate-900 prose-pre:border prose-pre:border-slate-800;
+    @apply prose-blockquote:border-l-primary-500 prose-blockquote:bg-slate-900/50 prose-blockquote:text-slate-300;
+    @apply prose-hr:border-slate-800;
+    @apply prose-table:text-slate-300;
+    @apply prose-th:text-slate-200 prose-th:bg-slate-800;
+    @apply prose-td:border-slate-700;
+    @apply prose-img:rounded-lg prose-img:shadow-lg;
+  }
+
+  /* Syntax highlighting theme */
+  .prose-dark pre code {
+    @apply text-slate-300;
+  }
+
+  /* File tree styling */
+  .file-tree {
+    @apply space-y-1;
+  }
+
+  .file-tree-item {
+    @apply flex items-center space-x-2 px-2 py-1.5 rounded-lg hover:bg-slate-800/50 transition-colors duration-150 cursor-pointer;
+  }
+
+  .file-tree-item.selected {
+    @apply bg-primary-900/30 text-primary-300;
+  }
+
+  .file-tree-folder {
+    @apply text-slate-400 hover:text-slate-300;
+  }
+
+  .file-tree-file {
+    @apply text-slate-500 hover:text-slate-300;
+  }
+}
+
+/* Animation utilities */
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Focus styles for accessibility */
+.focus-visible:focus {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-dark-950;
+}
+
+/* Transition utilities */
+.transition-all {
+  @apply transition-all duration-200 ease-in-out;
+}

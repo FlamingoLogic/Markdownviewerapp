@@ -1,0 +1,558 @@
+'use client'
+
+import React, { useState, useEffect } from 'react'
+import { 
+  Settings, 
+  Save, 
+  Eye, 
+  EyeOff, 
+  RefreshCw, 
+  Loader2,
+  Shield,
+  Github,
+  MessageCircle,
+  Palette,
+  Lock
+} from 'lucide-react'
+import { siteConfigOperations, type SiteConfig } from '@/lib/supabase'
+import { InputValidator } from '@/lib/auth'
+import { formatRelativeTime, cn } from '@/lib/utils'
+import { logError } from '@/lib/error-tracking'
+
+export default function AdminPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [adminPassword, setAdminPassword] = useState('')
+  const [config, setConfig] = useState<Partial<SiteConfig>>({})
+  const [originalConfig, setOriginalConfig] = useState<Partial<SiteConfig>>({})
+  const [saving, setSaving] = useState(false)
+  const [showPasswords, setShowPasswords] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
+
+  useEffect(() => {
+    checkAdminAuth()
+  }, [])
+
+  const checkAdminAuth = async () => {
+    try {
+      const response = await fetch('/api/admin/check')
+      const data = await response.json()
+      
+      if (data.isAuthenticated) {
+        setIsAuthenticated(true)
+        await loadConfig()
+      }
+    } catch (error) {
+      console.error('Admin auth check failed:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const loadConfig = async () => {
+    try {
+      const siteConfig = await siteConfigOperations.getConfig()
+      if (siteConfig) {
+        const configData = {
+          ...siteConfig,
+          site_password_hash: '', // Don't show hashes in form
+          admin_password_hash: ''
+        }
+        setConfig(configData)
+        setOriginalConfig(configData)
+      }
+    } catch (error) {
+      logError(error as Error, { context: 'loadAdminConfig' })
+      setError('Failed to load configuration')
+    }
+  }
+
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setIsAuthenticated(true)
+        setAdminPassword('')
+        await loadConfig()
+      } else {
+        setError(data.message || 'Invalid admin password')
+      }
+    } catch (error) {
+      setError('Login failed. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSave = async () => {
+    setSaving(true)
+    setError(null)
+    setSuccess(null)
+
+    try {
+      // Validate configuration
+      const validation = validateConfig(config)
+      if (!validation.isValid) {
+        setError(validation.errors[0])
+        return
+      }
+
+      const response = await fetch('/api/admin/config', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config)
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setSuccess('Configuration saved successfully!')
+        setOriginalConfig({ ...config })
+        setTimeout(() => setSuccess(null), 3000)
+      } else {
+        setError(data.message || 'Failed to save configuration')
+      }
+    } catch (error) {
+      setError('Failed to save configuration')
+      logError(error as Error, { context: 'saveAdminConfig' })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const validateConfig = (config: Partial<SiteConfig>) => {
+    const errors: string[] = []
+
+    if (!config.title?.trim()) {
+      errors.push('Site title is required')
+    }
+
+    if (!config.github_repo?.trim()) {
+      errors.push('GitHub repository is required')
+    } else {
+      const repoValidation = InputValidator.validateGitHubRepo(config.github_repo)
+      if (!repoValidation.isValid) {
+        errors.push(repoValidation.error!)
+      }
+    }
+
+    if (!config.folders || config.folders.length === 0) {
+      errors.push('At least one folder is required')
+    } else {
+      const folderValidation = InputValidator.validateFolders(config.folders)
+      if (!folderValidation.isValid) {
+        errors.push(folderValidation.errors[0])
+      }
+    }
+
+    return { isValid: errors.length === 0, errors }
+  }
+
+  const hasChanges = JSON.stringify(config) !== JSON.stringify(originalConfig)
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center">
+        <div className="flex items-center gap-3 text-slate-500">
+          <Loader2 className="w-6 h-6 animate-spin" />
+          <span>Loading admin panel...</span>
+        </div>
+      </div>
+    )
+  }
+
+  // Admin login form
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <div className="card-elevated p-6">
+            <div className="flex items-center gap-2 mb-6">
+              <Shield className="w-6 h-6 text-primary-400" />
+              <h1 className="text-xl font-semibold text-slate-100">
+                Admin Access
+              </h1>
+            </div>
+
+            <form onSubmit={handleAdminLogin} className="space-y-4">
+              <div>
+                <label htmlFor="admin-password" className="sr-only">
+                  Admin Password
+                </label>
+                <input
+                  id="admin-password"
+                  type="password"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  placeholder="Enter admin password"
+                  className="input-primary w-full"
+                  disabled={isLoading}
+                  autoFocus
+                />
+              </div>
+
+              {error && (
+                <div className="text-sm text-error-400 bg-error-900/20 border border-error-700/30 rounded-lg p-3">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isLoading || !adminPassword.trim()}
+                className="btn-primary w-full"
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Checking...</span>
+                  </div>
+                ) : (
+                  'Access Admin Panel'
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Admin configuration panel
+  return (
+    <div className="min-h-screen bg-dark-950">
+      <div className="max-w-4xl mx-auto p-6">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Settings className="w-8 h-8 text-primary-400" />
+              <div>
+                <h1 className="text-2xl font-bold text-slate-100">
+                  Admin Configuration
+                </h1>
+                <p className="text-slate-400">
+                  Manage your documentation site settings
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {config.last_sync_at && (
+                <div className="text-sm text-slate-500">
+                  Last sync: {formatRelativeTime(config.last_sync_at)}
+                </div>
+              )}
+              
+              <button
+                onClick={handleSave}
+                disabled={saving || !hasChanges}
+                className={cn(
+                  'btn-primary flex items-center gap-2',
+                  (!hasChanges || saving) && 'opacity-50 cursor-not-allowed'
+                )}
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4" />
+                    <span>Save Changes</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Status messages */}
+          {error && (
+            <div className="mt-4 text-sm text-error-400 bg-error-900/20 border border-error-700/30 rounded-lg p-3">
+              {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="mt-4 text-sm text-success-400 bg-success-900/20 border border-success-700/30 rounded-lg p-3">
+              {success}
+            </div>
+          )}
+        </div>
+
+        {/* Configuration Form */}
+        <div className="space-y-8">
+          {/* Site Information */}
+          <div className="card-elevated p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Palette className="w-5 h-5 text-primary-400" />
+              <h2 className="text-lg font-semibold text-slate-100">
+                Site Information
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Site Title *
+                </label>
+                <input
+                  type="text"
+                  value={config.title || ''}
+                  onChange={(e) => setConfig({ ...config, title: e.target.value })}
+                  className="input-primary w-full"
+                  placeholder="My Documentation Site"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Logo URL
+                </label>
+                <input
+                  type="url"
+                  value={config.logo_url || ''}
+                  onChange={(e) => setConfig({ ...config, logo_url: e.target.value })}
+                  className="input-primary w-full"
+                  placeholder="https://example.com/logo.png"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Slogan
+                </label>
+                <input
+                  type="text"
+                  value={config.slogan || ''}
+                  onChange={(e) => setConfig({ ...config, slogan: e.target.value })}
+                  className="input-primary w-full"
+                  placeholder="Your documentation tagline"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Help Text
+                </label>
+                <textarea
+                  value={config.help_text || ''}
+                  onChange={(e) => setConfig({ ...config, help_text: e.target.value })}
+                  className="input-primary w-full h-20 resize-none"
+                  placeholder="Instructions for users on the login page"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* GitHub Configuration */}
+          <div className="card-elevated p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Github className="w-5 h-5 text-primary-400" />
+              <h2 className="text-lg font-semibold text-slate-100">
+                GitHub Configuration
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Repository URL *
+                </label>
+                <input
+                  type="url"
+                  value={config.github_repo || ''}
+                  onChange={(e) => setConfig({ ...config, github_repo: e.target.value })}
+                  className="input-primary w-full"
+                  placeholder="https://github.com/username/repository"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Branch
+                </label>
+                <input
+                  type="text"
+                  value={config.branch || 'main'}
+                  onChange={(e) => setConfig({ ...config, branch: e.target.value })}
+                  className="input-primary w-full"
+                  placeholder="main"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Folders (comma separated) *
+                </label>
+                <input
+                  type="text"
+                  value={config.folders?.join(', ') || ''}
+                  onChange={(e) => setConfig({ 
+                    ...config, 
+                    folders: e.target.value.split(',').map(f => f.trim()).filter(f => f)
+                  })}
+                  className="input-primary w-full"
+                  placeholder="docs, guides, help"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Chat Configuration */}
+          <div className="card-elevated p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <MessageCircle className="w-5 h-5 text-primary-400" />
+              <h2 className="text-lg font-semibold text-slate-100">
+                Chat Configuration
+              </h2>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-300 mb-2">
+                Chat Service URL
+              </label>
+              <input
+                type="url"
+                value={config.iframe_url || ''}
+                onChange={(e) => setConfig({ ...config, iframe_url: e.target.value })}
+                className="input-primary w-full"
+                placeholder="https://example.com/chat-widget"
+              />
+              <p className="text-xs text-slate-500 mt-1">
+                Leave empty to disable chat panel
+              </p>
+            </div>
+          </div>
+
+          {/* Auto-Refresh Settings */}
+          <div className="card-elevated p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <RefreshCw className="w-5 h-5 text-primary-400" />
+              <h2 className="text-lg font-semibold text-slate-100">
+                Auto-Refresh Settings
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={config.auto_refresh_enabled ?? true}
+                    onChange={(e) => setConfig({ 
+                      ...config, 
+                      auto_refresh_enabled: e.target.checked 
+                    })}
+                    className="rounded border-slate-600 bg-slate-800 text-primary-500 focus:ring-primary-500"
+                  />
+                  <span className="text-sm text-slate-300">Enable auto-refresh</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">
+                  Refresh Interval (minutes)
+                </label>
+                <select
+                  value={config.refresh_interval_minutes || 15}
+                  onChange={(e) => setConfig({ 
+                    ...config, 
+                    refresh_interval_minutes: parseInt(e.target.value) 
+                  })}
+                  className="input-primary w-full"
+                  disabled={!config.auto_refresh_enabled}
+                >
+                  <option value={5}>5 minutes</option>
+                  <option value={10}>10 minutes</option>
+                  <option value={15}>15 minutes</option>
+                  <option value={30}>30 minutes</option>
+                  <option value={60}>60 minutes</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Security Settings */}
+          <div className="card-elevated p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Lock className="w-5 h-5 text-primary-400" />
+              <h2 className="text-lg font-semibold text-slate-100">
+                Security Settings
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-300">Show Passwords</span>
+                <button
+                  type="button"
+                  onClick={() => setShowPasswords(!showPasswords)}
+                  className="btn-ghost"
+                >
+                  {showPasswords ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Site Password
+                  </label>
+                  <input
+                    type={showPasswords ? 'text' : 'password'}
+                    value={config.site_password_hash || ''}
+                    onChange={(e) => setConfig({ 
+                      ...config, 
+                      site_password_hash: e.target.value 
+                    })}
+                    className="input-primary w-full"
+                    placeholder="Leave empty to keep current password"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Admin Password
+                  </label>
+                  <input
+                    type={showPasswords ? 'text' : 'password'}
+                    value={config.admin_password_hash || ''}
+                    onChange={(e) => setConfig({ 
+                      ...config, 
+                      admin_password_hash: e.target.value 
+                    })}
+                    className="input-primary w-full"
+                    placeholder="Leave empty to keep current password"
+                  />
+                </div>
+              </div>
+
+              <p className="text-xs text-slate-500">
+                Passwords will be securely hashed when saved. Leave empty to keep current passwords.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
