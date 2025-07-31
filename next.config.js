@@ -54,8 +54,7 @@ const nextConfig = {
   },
   
   // Configure for Amplify deployment
-  trailingSlash: true,
-  output: 'standalone'
+  trailingSlash: false
 }
 
 module.exports = nextConfig
