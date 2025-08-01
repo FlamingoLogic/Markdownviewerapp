@@ -49,8 +49,8 @@ export const siteConfigOperations = {
           auto_refresh_enabled: true,
           refresh_interval_minutes: 15,
           last_sync_at: new Date().toISOString(),
-          site_password_hash: '$2a$10$BOfgdjHgmWI2QJoFCU6VzesdL4KtX7P9sWQGF0NTV3sTiN6kUXY1K', // TempSite2024!
-          admin_password_hash: '$2a$10$XIpaIMGGP.xD8mHHVxNtOOjUJwtPm6VEXQCktRpMc4F11.m7NqLci', // TempAdmin2024!
+          site_password_hash: '$2a$10$.Z5wZpZ4xbTVjjqT39AUKOtqGTO2nLD0E3t2NU8atQUmV/KFU6LlC', // TempSite2024!
+          admin_password_hash: '$2a$10$wwQvHyDwBeQW0rQMFttmLuJk8bshJai6tE0nRo4w71BjLYJQlmeAu', // TempAdmin2024!
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }
