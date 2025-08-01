@@ -9,6 +9,9 @@ import {
   AuthErrors,
   getSecurityHeaders
 } from '@/lib/auth'
+
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic'
 import { siteConfigOperations } from '@/lib/supabase'
 import { logError } from '@/lib/error-tracking'
 

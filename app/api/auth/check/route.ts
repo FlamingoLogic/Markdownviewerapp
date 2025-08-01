@@ -3,6 +3,9 @@ import { cookies } from 'next/headers'
 import { CookieService, SessionService } from '@/lib/auth'
 import { getSecurityHeaders } from '@/lib/auth'
 
+// Force dynamic rendering for this API route
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: NextRequest) {
   try {
     const cookieStore = cookies()
