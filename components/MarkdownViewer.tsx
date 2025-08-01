@@ -355,7 +355,7 @@ function addHeadingIds(html: string): string {
 function enhanceCodeBlocks(html: string): string {
   // Add copy button to code blocks (basic implementation)
   return html.replace(
-    /<pre><code class="language-(\w+)">(.*?)<\/code><\/pre>/gs,
+    /<pre><code class="language-(\w+)">(.*?)<\/code><\/pre>/g,
     (match, language, code) => {
       return `
         <div class="relative group">

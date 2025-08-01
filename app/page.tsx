@@ -24,7 +24,7 @@ export default function HomePage() {
   const [siteConfig, setSiteConfig] = useState<SiteConfig | null>(null)
   const [password, setPassword] = useState('')
   const [files, setFiles] = useState<FileTreeItem[]>([])
-  const [selectedFile, setSelectedFile] = useState<FileTreeItem | null>(null)
+  const [selectedFile, setSelectedFile] = useState<FileTreeItem | undefined>(undefined)
   const [markdownContent, setMarkdownContent] = useState('')
   const [loadingContent, setLoadingContent] = useState(false)
 
@@ -58,7 +58,7 @@ export default function HomePage() {
       const config = await siteConfigOperations.getConfig()
       setSiteConfig(config)
     } catch (error) {
-      logError(error as Error, { context: 'loadSiteConfig' })
+      logError(error as Error, { additionalData: { context: 'loadSiteConfig' } })
     }
   }
 
@@ -99,7 +99,7 @@ export default function HomePage() {
         isLoading: false,
         error: 'Login failed. Please try again.',
       })
-      logError(error as Error, { context: 'login' })
+      logError(error as Error, { additionalData: { context: 'login' } })
     }
   }
 
@@ -113,13 +113,12 @@ export default function HomePage() {
       if (response.ok) {
         setFiles(data.files || [])
       } else {
-        logError(new Error('Failed to load files'), { 
-          context: 'loadFiles',
-          additionalData: { error: data.message }
+                logError(new Error('Failed to load files'), {
+          additionalData: { context: 'loadFiles', error: data.message }
         })
       }
     } catch (error) {
-      logError(error as Error, { context: 'loadFiles' })
+      logError(error as Error, { additionalData: { context: 'loadFiles' } })
     }
   }
 
@@ -138,15 +137,13 @@ export default function HomePage() {
       } else {
         setMarkdownContent('')
         logError(new Error('Failed to load file content'), {
-          context: 'loadFileContent',
-          additionalData: { file: file.path, error: data.message }
+          additionalData: { context: 'loadFileContent', file: file.path, error: data.message }
         })
       }
     } catch (error) {
       setMarkdownContent('')
       logError(error as Error, { 
-        context: 'loadFileContent',
-        additionalData: { file: file.path }
+        additionalData: { context: 'loadFileContent', file: file.path }
       })
     } finally {
       setLoadingContent(false)

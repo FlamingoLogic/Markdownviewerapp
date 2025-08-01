@@ -153,7 +153,7 @@ export function setupGlobalErrorHandling(): void {
       logger.logError(
         new Error(`Unhandled Promise Rejection: ${event.reason}`),
         'error',
-        { type: 'unhandledrejection' }
+        { additionalData: { type: 'unhandledrejection' } }
       )
     })
 
@@ -163,10 +163,12 @@ export function setupGlobalErrorHandling(): void {
         new Error(`Global Error: ${event.message}`),
         'error',
         {
-          type: 'globalerror',
-          filename: event.filename,
-          lineno: event.lineno,
-          colno: event.colno,
+          additionalData: {
+            type: 'globalerror',
+            filename: event.filename,
+            lineno: event.lineno,
+            colno: event.colno,
+          }
         }
       )
     })
@@ -178,12 +180,12 @@ export function setupGlobalErrorHandling(): void {
       logger.logError(
         new Error(`Unhandled Rejection at: ${promise}, reason: ${reason}`),
         'error',
-        { type: 'unhandledrejection' }
+        { additionalData: { type: 'unhandledrejection' } }
       )
     })
 
     process.on('uncaughtException', (error) => {
-      logger.logError(error, 'error', { type: 'uncaughtexception' })
+      logger.logError(error, 'error', { additionalData: { type: 'uncaughtexception' } })
     })
   }
 }

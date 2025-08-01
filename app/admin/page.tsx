@@ -63,7 +63,7 @@ export default function AdminPage() {
         setOriginalConfig(configData)
       }
     } catch (error) {
-      logError(error as Error, { context: 'loadAdminConfig' })
+      logError(error as Error, { additionalData: { context: 'loadAdminConfig' } })
       setError('Failed to load configuration')
     }
   }
@@ -126,7 +126,7 @@ export default function AdminPage() {
       }
     } catch (error) {
       setError('Failed to save configuration')
-      logError(error as Error, { context: 'saveAdminConfig' })
+      logError(error as Error, { additionalData: { context: 'saveAdminConfig' } })
     } finally {
       setSaving(false)
     }

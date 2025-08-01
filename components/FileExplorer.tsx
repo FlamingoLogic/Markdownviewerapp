@@ -12,7 +12,7 @@ import {
   ChevronDown,
   Loader2
 } from 'lucide-react'
-import { FileTreeItem } from '@/lib/github'
+import type { FileTreeItem } from '@/lib/github'
 import { formatRelativeTime, getFileIcon, cn, debounce } from '@/lib/utils'
 import { storage } from '@/lib/utils'
 

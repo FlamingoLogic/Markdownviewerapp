@@ -89,8 +89,6 @@ module.exports = {
   },
   plugins: [
     // Add typography plugin for better markdown styling
-    require('@tailwindcss/typography')({
-      className: 'prose-dark',
-    }),
+    require('@tailwindcss/typography'),
   ],
 }
