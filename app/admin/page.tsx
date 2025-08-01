@@ -355,7 +355,7 @@ export default function AdminPage() {
                 <textarea
                   value={config.help_text || ''}
                   onChange={(e) => setConfig({ ...config, help_text: e.target.value })}
-                  className="input-primary w-full h-20 resize-none"
+                  className="w-full h-20 resize-none px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Instructions for users on the login page"
                 />
               </div>
