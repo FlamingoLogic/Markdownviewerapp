@@ -5,6 +5,8 @@ applications:
         preBuild:
           commands:
             - nvm use 18
+            - node --version
+            - npm --version
             - echo "Installing dependencies..."
             - npm ci
         build:
@@ -12,9 +14,10 @@ applications:
             - echo "Building Next.js application..."
             - npm run build
       artifacts:
-        baseDirectory: .next
+        baseDirectory: .
         files:
           - '**/*'
+          - '!node_modules/**/*'
       cache:
         paths:
           - node_modules/**/*
