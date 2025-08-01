@@ -77,8 +77,8 @@ ALTER TABLE site_configs ENABLE ROW LEVEL SECURITY;
 ```
 
 **🔐 Temporary Access:**
-- **Site Password**: `password`
-- **Admin Password**: `admin123`
+- **Site Password**: `TempSite2024!`
+- **Admin Password**: `TempAdmin2024!`
 
 ⚠️ **Important**: Change these default passwords immediately after setup for security!
 
