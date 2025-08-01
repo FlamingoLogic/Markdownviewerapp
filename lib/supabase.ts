@@ -35,6 +35,27 @@ export const siteConfigOperations = {
   // Get site configuration
   async getConfig(): Promise<SiteConfig | null> {
     try {
+      // If Supabase is not configured (using placeholder URL), return mock config
+      if (supabaseUrl === 'https://placeholder.supabase.co') {
+        return {
+          id: 'demo-config',
+          title: 'Demo Documentation Site',
+          slogan: 'Your documentation, beautifully organized',
+          help_text: 'Welcome to your documentation site! Configure this in the admin panel.',
+          github_repo: 'your-username/your-repo',
+          branch: 'main',
+          folders: ['docs', 'guides'],
+          iframe_url: 'https://example.com/chat',
+          auto_refresh_enabled: true,
+          refresh_interval_minutes: 15,
+          last_sync_at: new Date().toISOString(),
+          site_password_hash: '$2a$10$BOfgdjHgmWI2QJoFCU6VzesdL4KtX7P9sWQGF0NTV3sTiN6kUXY1K', // TempSite2024!
+          admin_password_hash: '$2a$10$BOfgdjHgmWI2QJoFCU6VzesdL4KtX7P9sWQGF0NTV3sTiN6kUXY1K', // TempAdmin2024! (same for demo)
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+      }
+
       const { data, error } = await supabase
         .from('site_configs')
         .select('*')
