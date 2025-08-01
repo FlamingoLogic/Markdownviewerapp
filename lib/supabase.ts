@@ -50,7 +50,7 @@ export const siteConfigOperations = {
           refresh_interval_minutes: 15,
           last_sync_at: new Date().toISOString(),
           site_password_hash: '$2a$10$BOfgdjHgmWI2QJoFCU6VzesdL4KtX7P9sWQGF0NTV3sTiN6kUXY1K', // TempSite2024!
-          admin_password_hash: '$2a$10$BOfgdjHgmWI2QJoFCU6VzesdL4KtX7P9sWQGF0NTV3sTiN6kUXY1K', // TempAdmin2024! (same for demo)
+          admin_password_hash: '$2a$10$XIpaIMGGP.xD8mHHVxNtOOjUJwtPm6VEXQCktRpMc4F11.m7NqLci', // TempAdmin2024!
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }
