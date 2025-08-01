@@ -76,6 +76,12 @@ CREATE TABLE site_configs (
 ALTER TABLE site_configs ENABLE ROW LEVEL SECURITY;
 ```
 
+**🔐 Temporary Access:**
+- **Site Password**: `password`
+- **Admin Password**: `admin123`
+
+⚠️ **Important**: Change these default passwords immediately after setup for security!
+
 ### 4. Development
 ```bash
 npm run dev
