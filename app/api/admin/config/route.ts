@@ -17,7 +17,7 @@ function isAuthenticated(): boolean {
 
     // For now, just check if session exists and is valid format
     // In production, you'd validate the session token properly
-    return adminSession.value && adminSession.value.length > 10
+    return !!(adminSession.value && adminSession.value.length > 10)
   } catch (error) {
     console.error('Auth check error:', error)
     return false
