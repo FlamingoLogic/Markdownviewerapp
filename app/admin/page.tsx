@@ -111,7 +111,10 @@ export default function AdminPage() {
 
       const response = await fetch('/api/admin/config', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-admin-secret': adminPassword || 'TempAdmin2024!'
+        },
         body: JSON.stringify(config)
       })
 

@@ -1,23 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import { siteConfigOperations } from '@/lib/supabase'
 import bcrypt from 'bcryptjs'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-function isAuthenticated(): boolean {
+function isAuthenticated(request: NextRequest): boolean {
   try {
-    const cookieStore = cookies()
-    const adminSession = cookieStore.get('admin-session')
+    // Check for admin secret in header or query param
+    const adminSecret = request.headers.get('x-admin-secret') || 
+                       request.nextUrl.searchParams.get('admin_secret') ||
+                       request.headers.get('authorization')?.replace('Bearer ', '')
     
-    if (!adminSession) {
-      return false
-    }
-
-    // For now, just check if session exists and is valid format
-    // In production, you'd validate the session token properly
-    return !!(adminSession.value && adminSession.value.length > 10)
+    // Use environment variable or fallback to our temp password
+    const validSecret = process.env.ADMIN_SECRET || 'TempAdmin2024!'
+    
+    return adminSecret === validSecret
   } catch (error) {
     console.error('Auth check error:', error)
     return false
@@ -26,9 +24,9 @@ function isAuthenticated(): boolean {
 
 export async function GET(request: NextRequest) {
   try {
-    if (!isAuthenticated()) {
+    if (!isAuthenticated(request)) {
       return NextResponse.json(
-        { message: 'Unauthorized' },
+        { message: 'Unauthorized - Admin secret required' },
         { status: 401 }
       )
     }
@@ -56,9 +54,9 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    if (!isAuthenticated()) {
+    if (!isAuthenticated(request)) {
       return NextResponse.json(
-        { message: 'Unauthorized' },
+        { message: 'Unauthorized - Admin secret required' },
         { status: 401 }
       )
     }
