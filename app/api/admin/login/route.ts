@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { AuthManager } from '@/lib/auth'
+import { SessionService, CookieService } from '@/lib/auth'
 import { siteConfigOperations } from '@/lib/supabase'
 import bcrypt from 'bcryptjs'
 
@@ -36,20 +36,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Create admin session
-    const sessionToken = AuthManager.generateSessionToken()
+    const session = SessionService.createSession(true) // true for admin
+    const sessionToken = Buffer.from(JSON.stringify(session)).toString('base64')
+    
     const response = NextResponse.json(
       { message: 'Admin login successful' },
       { status: 200 }
     )
 
-    // Set admin session cookie
-    response.cookies.set('admin-session', sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24, // 24 hours
-      path: '/'
-    })
+    // Set admin session cookie using the proper cookie options
+    const cookieOptions = CookieService.getAdminCookieOptions()
+    response.cookies.set('admin-session', sessionToken, cookieOptions)
 
     return response
   } catch (error) {
