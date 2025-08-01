@@ -7,9 +7,21 @@ import bcrypt from 'bcryptjs'
 export const dynamic = 'force-dynamic'
 
 function isAuthenticated(): boolean {
-  const cookieStore = cookies()
-  const adminSession = cookieStore.get('admin-session')
-  return !!adminSession
+  try {
+    const cookieStore = cookies()
+    const adminSession = cookieStore.get('admin-session')
+    
+    if (!adminSession) {
+      return false
+    }
+
+    // For now, just check if session exists and is valid format
+    // In production, you'd validate the session token properly
+    return adminSession.value && adminSession.value.length > 10
+  } catch (error) {
+    console.error('Auth check error:', error)
+    return false
+  }
 }
 
 export async function GET(request: NextRequest) {
