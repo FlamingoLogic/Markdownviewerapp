@@ -201,7 +201,7 @@ export default function AdminPage() {
                   value={adminPassword}
                   onChange={(e) => setAdminPassword(e.target.value)}
                   placeholder="Enter admin password"
-                  className="input-primary w-full"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   disabled={isLoading}
                   autoFocus
                 />
@@ -317,7 +317,7 @@ export default function AdminPage() {
                   type="text"
                   value={config.title || ''}
                   onChange={(e) => setConfig({ ...config, title: e.target.value })}
-                  className="input-primary w-full"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="My Documentation Site"
                 />
               </div>
@@ -330,7 +330,7 @@ export default function AdminPage() {
                   type="url"
                   value={config.logo_url || ''}
                   onChange={(e) => setConfig({ ...config, logo_url: e.target.value })}
-                  className="input-primary w-full"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="https://example.com/logo.png"
                 />
               </div>
@@ -343,7 +343,7 @@ export default function AdminPage() {
                   type="text"
                   value={config.slogan || ''}
                   onChange={(e) => setConfig({ ...config, slogan: e.target.value })}
-                  className="input-primary w-full"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="Your documentation tagline"
                 />
               </div>
@@ -380,7 +380,7 @@ export default function AdminPage() {
                   type="url"
                   value={config.github_repo || ''}
                   onChange={(e) => setConfig({ ...config, github_repo: e.target.value })}
-                  className="input-primary w-full"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="https://github.com/username/repository"
                 />
               </div>
@@ -393,7 +393,7 @@ export default function AdminPage() {
                   type="text"
                   value={config.branch || 'main'}
                   onChange={(e) => setConfig({ ...config, branch: e.target.value })}
-                  className="input-primary w-full"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="main"
                 />
               </div>
@@ -409,7 +409,7 @@ export default function AdminPage() {
                     ...config, 
                     folders: e.target.value.split(',').map(f => f.trim()).filter(f => f)
                   })}
-                  className="input-primary w-full"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   placeholder="docs, guides, help"
                 />
               </div>
@@ -477,7 +477,7 @@ export default function AdminPage() {
                     ...config, 
                     refresh_interval_minutes: parseInt(e.target.value) 
                   })}
-                  className="input-primary w-full"
+                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   disabled={!config.auto_refresh_enabled}
                 >
                   <option value={5}>5 minutes</option>
@@ -527,7 +527,7 @@ export default function AdminPage() {
                       ...config, 
                       site_password_hash: e.target.value 
                     })}
-                    className="input-primary w-full"
+                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="Leave empty to keep current password"
                   />
                 </div>
@@ -543,7 +543,7 @@ export default function AdminPage() {
                       ...config, 
                       admin_password_hash: e.target.value 
                     })}
-                    className="input-primary w-full"
+                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="Leave empty to keep current password"
                   />
                 </div>
