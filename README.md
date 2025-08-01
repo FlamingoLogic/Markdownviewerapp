@@ -51,36 +51,23 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_key
 GITHUB_TOKEN=optional_for_private_repos
 ```
 
-### 3. Database Setup
-Run this SQL in your Supabase SQL editor:
-```sql
-CREATE TABLE site_configs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  title VARCHAR NOT NULL,
-  logo_url VARCHAR,
-  slogan VARCHAR,
-  help_text TEXT,
-  github_repo VARCHAR NOT NULL,
-  branch VARCHAR DEFAULT 'main',
-  folders TEXT[],
-  iframe_url VARCHAR,
-  auto_refresh_enabled BOOLEAN DEFAULT true,
-  refresh_interval_minutes INTEGER DEFAULT 15,
-  last_sync_at TIMESTAMPTZ,
-  site_password_hash VARCHAR NOT NULL,
-  admin_password_hash VARCHAR NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+### 3. Database Setup (Supabase) - **RECOMMENDED**
 
-ALTER TABLE site_configs ENABLE ROW LEVEL SECURITY;
-```
+🚀 **Quick Setup Guide**: Follow [`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md) for complete step-by-step instructions (5 minutes)
 
-**🔐 Temporary Access:**
+**Why Supabase Setup is Better:**
+- ✅ **Persistent configuration** - settings save permanently  
+- ✅ **Production-ready** security and performance
+- ✅ **Admin panel works fully** - make real configuration changes
+- ✅ **Reusable template** for multiple documentation sites
+
+**Alternative**: The app includes demo/mock configuration for immediate testing, but **Supabase is strongly recommended** for any real use.
+
+**🔐 Default Access (after Supabase setup):**
 - **Site Password**: `TempSite2024!`
 - **Admin Password**: `TempAdmin2024!`
 
-⚠️ **Important**: Change these default passwords immediately after setup for security!
+⚠️ **Important**: Change these in the admin panel immediately for security!
 
 ### 4. Development
 ```bash
