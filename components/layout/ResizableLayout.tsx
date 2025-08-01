@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
-import { GripVertical } from 'lucide-react'
+import { GripVertical, Settings, LogOut } from 'lucide-react'
 import { storage } from '@/lib/utils'
+import Link from 'next/link'
 
 interface ResizableLayoutProps {
   children: React.ReactNode[]
@@ -122,6 +123,32 @@ export function ResizableLayout({ children, className = '', onLayoutChange }: Re
   // Desktop layout - resizable panels
   return (
     <div className={`h-screen flex flex-col ${className}`}>
+      {/* Top Navigation Header */}
+      <div className="bg-slate-900 border-b border-slate-800 p-3 flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          <h1 className="text-lg font-semibold text-slate-200">Documentation</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link 
+            href="/admin"
+            className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-300 hover:text-slate-100 hover:bg-slate-800 rounded transition-colors"
+          >
+            <Settings className="w-4 h-4" />
+            Admin Panel
+          </Link>
+          <button
+            onClick={async () => {
+              await fetch('/api/auth/logout', { method: 'POST' })
+              window.location.reload()
+            }}
+            className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </button>
+        </div>
+      </div>
+
       {/* Layout controls (only in development) */}
       {process.env.NODE_ENV === 'development' && (
         <div className="bg-slate-900 border-b border-slate-800 p-2 flex gap-2 text-xs">
@@ -236,6 +263,30 @@ function MobileTabLayout({ children }: { children: React.ReactNode[] }) {
 
   return (
     <div className="h-screen flex flex-col bg-dark-950">
+      {/* Top Navigation Header */}
+      <div className="bg-slate-900 border-b border-slate-800 p-3 flex justify-between items-center">
+        <h1 className="text-lg font-semibold text-slate-200">Documentation</h1>
+        <div className="flex items-center gap-2">
+          <Link 
+            href="/admin"
+            className="flex items-center gap-1 px-2 py-1 text-xs text-slate-300 hover:text-slate-100 hover:bg-slate-800 rounded transition-colors"
+          >
+            <Settings className="w-3 h-3" />
+            Admin
+          </Link>
+          <button
+            onClick={async () => {
+              await fetch('/api/auth/logout', { method: 'POST' })
+              window.location.reload()
+            }}
+            className="flex items-center gap-1 px-2 py-1 text-xs text-slate-400 hover:text-red-400 hover:bg-slate-800 rounded transition-colors"
+          >
+            <LogOut className="w-3 h-3" />
+            Logout
+          </button>
+        </div>
+      </div>
+
       {/* Tab Navigation */}
       <div className="bg-slate-900 border-b border-slate-800">
         <div className="flex">
