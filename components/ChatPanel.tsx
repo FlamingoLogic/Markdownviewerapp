@@ -257,15 +257,44 @@ export function ChatPanel({ iframeUrl, className = '', onUrlChange }: ChatPanelP
 
         {error && (
           <div className="absolute inset-0 bg-slate-925 flex items-center justify-center z-10">
-            <div className="text-center text-slate-500 p-4">
+            <div className="text-center text-slate-500 p-4 max-w-md">
               <AlertCircle className="w-8 h-8 mx-auto mb-2 text-error-400" />
               <p className="text-sm mb-3">{error}</p>
-              <button
-                onClick={refreshIframe}
-                className="btn-secondary text-xs"
-              >
-                Try Again
-              </button>
+              
+              {/* Mixed Content Help */}
+              {iframeUrl?.startsWith('http://') && (
+                <div className="bg-slate-800 rounded-lg p-3 mb-3 text-left">
+                  <p className="text-xs font-medium text-yellow-400 mb-2">HTTP Mixed Content:</p>
+                  <p className="text-xs text-slate-400 mb-2">
+                    Your browser may block HTTP content. Try:
+                  </p>
+                  <ol className="text-xs text-slate-400 space-y-1 list-decimal list-inside">
+                    <li>Click the shield icon in address bar</li>
+                    <li>Select "Load unsafe scripts" or "Disable protection"</li>
+                    <li>Or use HTTPS if your service supports it</li>
+                  </ol>
+                </div>
+              )}
+              
+              <div className="flex gap-2 justify-center">
+                <button
+                  onClick={refreshIframe}
+                  className="btn-secondary text-xs"
+                >
+                  Try Again
+                </button>
+                {iframeUrl?.startsWith('http://') && (
+                  <button
+                    onClick={() => {
+                      const proxyUrl = `/api/proxy-chat?url=${encodeURIComponent(iframeUrl)}`
+                      window.open(proxyUrl, '_blank', 'noopener,noreferrer')
+                    }}
+                    className="btn-primary text-xs"
+                  >
+                    Open Direct
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}

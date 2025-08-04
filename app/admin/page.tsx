@@ -462,12 +462,27 @@ export default function AdminPage() {
                     <h4 className="text-sm font-medium text-slate-300 mb-2">Configuration Notes:</h4>
                     <ul className="text-xs text-slate-500 space-y-1">
                       <li>• Leave empty to disable the chat panel completely</li>
-                      <li>• Use HTTPS URLs for production (avoids mixed content security)</li>
-                      <li>• HTTP URLs may require browser permission for "unsafe content"</li>
-                      <li>• The chat service must allow iframe embedding</li>
-                      <li>• Example: ttyd terminal, customer support widgets, etc.</li>
+                      <li>• <span className="text-green-400">HTTP URLs are now supported!</span> App configured to allow mixed content</li>
+                      <li>• If HTTP still fails, browser may show shield icon - click to "Load unsafe scripts"</li>
+                      <li>• HTTPS URLs work seamlessly without browser warnings</li>
+                      <li>• The chat service must allow iframe embedding (no X-Frame-Options: DENY)</li>
+                      <li>• Example: ttyd terminal, customer support widgets, embedded chats</li>
                     </ul>
                   </div>
+                  
+                  {/* HTTP Detection */}
+                  {config.iframe_url?.startsWith('http://') && (
+                    <div className="bg-orange-900/20 border border-orange-500/30 rounded-lg p-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                        <span className="text-sm font-medium text-orange-300">HTTP URL Detected</span>
+                      </div>
+                      <p className="text-xs text-orange-200">
+                        This app is configured to allow HTTP iframes. If it doesn't work, 
+                        your browser may show a security warning that you can override.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
