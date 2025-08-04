@@ -309,6 +309,10 @@ function FileTreeItem({
               isSelected={selectedFile === child.path}
               onClick={() => handleFileSelect(child)}
               onToggleExpand={() => toggleExpanded(child.path)}
+              expanded={expanded}
+              selectedFile={selectedFile}
+              handleFileSelect={handleFileSelect}
+              toggleExpanded={toggleExpanded}
             />
           ))}
         </div>
