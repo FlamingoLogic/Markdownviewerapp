@@ -20,6 +20,12 @@ export async function GET(request: NextRequest) {
         value: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT_SET',
         length: process.env.SUPABASE_SERVICE_ROLE_KEY?.length || 0,
         startsWithEyJ: process.env.SUPABASE_SERVICE_ROLE_KEY?.startsWith('eyJ') || false
+      },
+      NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY: {
+        exists: !!process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY,
+        value: process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY ? 'SET' : 'NOT_SET',
+        length: process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY?.length || 0,
+        startsWithEyJ: process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY?.startsWith('eyJ') || false
       }
     }
     
