@@ -85,12 +85,22 @@ export default function AdminPage() {
       if (response.ok) {
         setIsAuthenticated(true)
         setAdminPassword('')
+        setError(null)
         await loadConfig()
       } else {
         setError(data.message || 'Invalid admin password')
+        // Clear password field on error to prevent caching interference
+        setAdminPassword('')
+        // Force form reset to clear any browser autocomplete
+        const form = document.getElementById('admin-login-form') as HTMLFormElement
+        if (form) {
+          setTimeout(() => form.reset(), 100)
+        }
       }
     } catch (error) {
       setError('Login failed. Please try again.')
+      // Clear password field on error to prevent caching interference
+      setAdminPassword('')
     } finally {
       setIsLoading(false)
     }
@@ -194,13 +204,14 @@ export default function AdminPage() {
               </h1>
             </div>
 
-            <form onSubmit={handleAdminLogin} className="space-y-4">
+            <form id="admin-login-form" onSubmit={handleAdminLogin} className="space-y-4" autoComplete="off">
               <div>
                 <label htmlFor="admin-password" className="sr-only">
                   Admin Password
                 </label>
                 <input
                   id="admin-password"
+                  name="admin-password"
                   type="password"
                   value={adminPassword}
                   onChange={(e) => setAdminPassword(e.target.value)}
@@ -208,6 +219,10 @@ export default function AdminPage() {
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   disabled={isLoading}
                   autoFocus
+                  autoComplete="new-password"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck="false"
                 />
               </div>
 

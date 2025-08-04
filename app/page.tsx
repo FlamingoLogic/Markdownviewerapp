@@ -92,6 +92,13 @@ export default function HomePage() {
           isLoading: false,
           error: data.message || 'Invalid password',
         })
+        // Clear password field on error to prevent caching interference
+        setPassword('')
+        // Force form reset to clear any browser autocomplete
+        const form = document.getElementById('site-login-form') as HTMLFormElement
+        if (form) {
+          setTimeout(() => form.reset(), 100)
+        }
       }
     } catch (error) {
       setAuthState({
@@ -99,6 +106,8 @@ export default function HomePage() {
         isLoading: false,
         error: 'Login failed. Please try again.',
       })
+      // Clear password field on error to prevent caching interference
+      setPassword('')
       logError(error as Error, { additionalData: { context: 'login' } })
     }
   }
@@ -211,13 +220,14 @@ export default function HomePage() {
               </div>
             )}
 
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form id="site-login-form" onSubmit={handleLogin} className="space-y-4" autoComplete="off">
               <div>
                 <label htmlFor="password" className="sr-only">
                   Password
                 </label>
                 <input
                   id="password"
+                  name="site-password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -225,6 +235,10 @@ export default function HomePage() {
                   className="input-primary w-full"
                   disabled={authState.isLoading}
                   autoFocus
+                  autoComplete="new-password"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck="false"
                 />
               </div>
 
