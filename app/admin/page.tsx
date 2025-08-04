@@ -109,13 +109,17 @@ export default function AdminPage() {
         return
       }
 
+      // CRITICAL FIX: Don't send empty password hashes!
+      // Remove password fields from the update to preserve existing hashes
+      const { site_password_hash, admin_password_hash, ...configWithoutPasswords } = config
+
       const response = await fetch('/api/admin/config', {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
           'x-admin-secret': adminPassword || 'TempAdmin2024!'
         },
-        body: JSON.stringify(config)
+        body: JSON.stringify(configWithoutPasswords)
       })
 
       const data = await response.json()
