@@ -76,13 +76,43 @@ export const siteConfigOperations = {
   // Update site configuration (admin only)
   async updateConfig(config: Partial<SiteConfig>): Promise<boolean> {
     try {
+      // If Supabase is not configured (using placeholder URL), cannot update
+      if (supabaseUrl === 'https://placeholder.supabase.co') {
+        console.warn('Cannot update configuration: Supabase not configured. Using mock configuration.')
+        return false
+      }
+
+      // Get current config to ensure we have a valid ID
+      const currentConfig = await this.getConfig()
+      
+      if (!currentConfig) {
+        // No config exists, create a new one
+        console.log('No configuration found, creating initial configuration...')
+        
+        const newConfig = {
+          title: config.title || 'Documentation Site',
+          github_repo: config.github_repo || 'your-username/your-repo',
+          branch: config.branch || 'main',
+          folders: config.folders || ['docs'],
+          auto_refresh_enabled: config.auto_refresh_enabled ?? true,
+          refresh_interval_minutes: config.refresh_interval_minutes || 15,
+          site_password_hash: config.site_password_hash || '$2a$10$.Z5wZpZ4xbTVjjqT39AUKOtqGTO2nLD0E3t2NU8atQUmV/KFU6LlC',
+          admin_password_hash: config.admin_password_hash || '$2a$10$wwQvHyDwBeQW0rQMFttmLuJk8bshJai6tE0nRo4w71BjLYJQlmeAu',
+          ...config
+        }
+        
+        const createdConfig = await this.createConfig(newConfig)
+        return !!createdConfig
+      }
+
+      // Update existing config
       const { error } = await supabaseAdmin
         .from('site_configs')
         .update({
           ...config,
           updated_at: new Date().toISOString()
         })
-        .eq('id', config.id)
+        .eq('id', currentConfig.id)
 
       if (error) {
         console.error('Error updating site config:', error)
@@ -120,12 +150,26 @@ export const siteConfigOperations = {
   // Update last sync timestamp
   async updateLastSync(): Promise<boolean> {
     try {
+      // If Supabase is not configured (using placeholder URL), cannot update
+      if (supabaseUrl === 'https://placeholder.supabase.co') {
+        console.warn('Cannot update last sync: Supabase not configured. Using mock configuration.')
+        return false
+      }
+
+      // Get the first config to update (since we expect only one)
+      const currentConfig = await this.getConfig()
+      if (!currentConfig?.id) {
+        console.error('No site configuration found to update sync time')
+        return false
+      }
+
       const { error } = await supabaseAdmin
         .from('site_configs')
         .update({
           last_sync_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         })
+        .eq('id', currentConfig.id)
 
       if (error) {
         console.error('Error updating last sync:', error)
