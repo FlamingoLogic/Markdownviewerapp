@@ -26,15 +26,24 @@ export function ChatPanel({ iframeUrl, className = '', onUrlChange }: ChatPanelP
   const [customUrl, setCustomUrl] = useState('')
   const [showUrlInput, setShowUrlInput] = useState(false)
   const iframeRef = useRef<HTMLIFrameElement>(null)
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Handle iframe load
   const handleIframeLoad = () => {
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current)
+      loadingTimeoutRef.current = null
+    }
     setLoading(false)
     setError(null)
   }
 
   // Handle iframe error
   const handleIframeError = () => {
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current)
+      loadingTimeoutRef.current = null
+    }
     setLoading(false)
     setError('Failed to load chat service')
   }
@@ -65,11 +74,30 @@ export function ChatPanel({ iframeUrl, className = '', onUrlChange }: ChatPanelP
     }
   }
 
-  // Set loading state when URL changes
+  // Set loading state when URL changes with timeout
   useEffect(() => {
     if (iframeUrl) {
       setLoading(true)
       setError(null)
+      
+      // Clear any existing timeout
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current)
+      }
+      
+      // Set a timeout to stop loading if iframe doesn't respond
+      loadingTimeoutRef.current = setTimeout(() => {
+        setLoading(false)
+        setError('Chat service is taking too long to load. Try refreshing or check the URL.')
+        loadingTimeoutRef.current = null
+      }, 15000) // 15 second timeout
+      
+      return () => {
+        if (loadingTimeoutRef.current) {
+          clearTimeout(loadingTimeoutRef.current)
+          loadingTimeoutRef.current = null
+        }
+      }
     }
   }, [iframeUrl])
 
@@ -253,7 +281,7 @@ export function ChatPanel({ iframeUrl, className = '', onUrlChange }: ChatPanelP
             onLoad={handleIframeLoad}
             onError={handleIframeError}
             title="Chat Service"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation"
             allow="microphone; camera; autoplay; encrypted-media; fullscreen"
           />
         )}
@@ -279,7 +307,7 @@ export function ChatPanel({ iframeUrl, className = '', onUrlChange }: ChatPanelP
               src={iframeUrl}
               className="w-full h-full border-none"
               title="Chat Service (Maximized)"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation"
               allow="microphone; camera; autoplay; encrypted-media; fullscreen"
             />
           </div>
