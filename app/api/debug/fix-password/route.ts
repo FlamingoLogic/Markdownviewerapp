@@ -5,7 +5,7 @@ import { getSecurityHeaders } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const siteConfig = await siteConfigOperations.getConfig()
     if (!siteConfig) {
