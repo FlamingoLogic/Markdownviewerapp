@@ -88,6 +88,28 @@ body {
   outline: none;
 }
 
+.input-primary {
+  background-color: #1e293b;
+  border: 2px solid #475569;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  color: #f1f5f9;
+  font-size: 0.875rem;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.input-primary:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  background-color: #0f172a;
+}
+
+.input-primary:hover {
+  border-color: #64748b;
+}
+
 /* Card styles */
 .card {
   background-color: #1e293b;

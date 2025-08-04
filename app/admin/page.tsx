@@ -417,28 +417,59 @@ export default function AdminPage() {
           </div>
 
           {/* Chat Configuration */}
-          <div className="card-elevated p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <MessageCircle className="w-5 h-5 text-primary-400" />
-              <h2 className="text-lg font-semibold text-slate-100">
-                Chat Configuration
-              </h2>
+          <div className="card-elevated p-6 border-l-4 border-orange-500">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-orange-500/20 rounded-lg">
+                <MessageCircle className="w-6 h-6 text-orange-400" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-slate-100">
+                  Chat Service Configuration
+                </h2>
+                <p className="text-sm text-slate-400">
+                  Configure iframe-based chat integration
+                </p>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
-                Chat Service URL
-              </label>
-              <input
-                type="url"
-                value={config.iframe_url || ''}
-                onChange={(e) => setConfig({ ...config, iframe_url: e.target.value })}
-                className="input-primary w-full"
-                placeholder="https://example.com/chat-widget"
-              />
-              <p className="text-xs text-slate-500 mt-1">
-                Leave empty to disable chat panel
-              </p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-3">
+                  Chat Service URL
+                </label>
+                <div className="space-y-3">
+                  <input
+                    type="url"
+                    value={config.iframe_url || ''}
+                    onChange={(e) => setConfig({ ...config, iframe_url: e.target.value })}
+                    className="input-primary w-full text-base"
+                    placeholder="http://16.176.163.234:7681/ or https://your-chat-service.com"
+                  />
+                  
+                  {/* Current Value Display */}
+                  {config.iframe_url && (
+                    <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-slate-300">Current Chat URL:</span>
+                      </div>
+                      <code className="text-sm text-green-400 break-all">{config.iframe_url}</code>
+                    </div>
+                  )}
+                  
+                  {/* Help Text */}
+                  <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                    <h4 className="text-sm font-medium text-slate-300 mb-2">Configuration Notes:</h4>
+                    <ul className="text-xs text-slate-500 space-y-1">
+                      <li>• Leave empty to disable the chat panel completely</li>
+                      <li>• Use HTTPS URLs for production (avoids mixed content security)</li>
+                      <li>• HTTP URLs may require browser permission for "unsafe content"</li>
+                      <li>• The chat service must allow iframe embedding</li>
+                      <li>• Example: ttyd terminal, customer support widgets, etc.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
