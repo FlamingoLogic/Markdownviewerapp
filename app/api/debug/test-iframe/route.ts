@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       xFrameBlocked: xFrameOptions === 'DENY' || xFrameOptions === 'SAMEORIGIN',
       cspBlocked: csp?.includes('frame-ancestors') && !csp.includes("'self'"),
       networkAccessible: fetchResult.accessible,
-      recommendations: []
+      recommendations: [] as string[]
     }
 
     // Generate recommendations
