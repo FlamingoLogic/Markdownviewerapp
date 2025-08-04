@@ -112,12 +112,23 @@ export const siteConfigOperations = {
       }
 
       // Update existing config
+      // CRITICAL: Never allow empty password hashes to overwrite existing ones
+      const updateData = { ...config, updated_at: new Date().toISOString() }
+      
+      // Remove password fields if they're empty (preserve existing hashes)
+      if (!updateData.site_password_hash || updateData.site_password_hash.trim() === '') {
+        delete updateData.site_password_hash
+        console.log('Skipping empty site_password_hash to preserve existing')
+      }
+      
+      if (!updateData.admin_password_hash || updateData.admin_password_hash.trim() === '') {
+        delete updateData.admin_password_hash
+        console.log('Skipping empty admin_password_hash to preserve existing')
+      }
+
       const { error } = await supabaseAdmin
         .from('site_configs')
-        .update({
-          ...config,
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('id', currentConfig.id)
 
       if (error) {

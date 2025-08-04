@@ -62,6 +62,22 @@ export async function PUT(request: NextRequest) {
     }
 
     const updates = await request.json()
+    
+    console.log('=== ADMIN CONFIG UPDATE DEBUG ===')
+    console.log('Raw updates received:', JSON.stringify(updates, null, 2))
+    console.log('site_password_hash in updates:', updates.site_password_hash)
+    console.log('admin_password_hash in updates:', updates.admin_password_hash)
+
+    // CRITICAL: Remove empty password hashes to prevent deletion
+    if (updates.site_password_hash === '' || updates.site_password_hash === null || updates.site_password_hash === undefined) {
+      console.log('Removing empty site_password_hash from updates')
+      delete updates.site_password_hash
+    }
+    
+    if (updates.admin_password_hash === '' || updates.admin_password_hash === null || updates.admin_password_hash === undefined) {
+      console.log('Removing empty admin_password_hash from updates')
+      delete updates.admin_password_hash
+    }
 
     // Handle password updates if provided
     if (updates.site_password) {
@@ -75,7 +91,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Update configuration
-    console.log('Attempting to update config with:', updates)
+    console.log('Final updates after processing:', JSON.stringify(updates, null, 2))
     const success = await siteConfigOperations.updateConfig(updates)
     
     if (!success) {
