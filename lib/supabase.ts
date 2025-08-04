@@ -88,6 +88,7 @@ export const siteConfigOperations = {
       if (!currentConfig) {
         // No config exists, create a new one
         console.log('No configuration found, creating initial configuration...')
+        console.log('Config data received:', config)
         
         const newConfig = {
           title: config.title || 'Documentation Site',
@@ -101,7 +102,9 @@ export const siteConfigOperations = {
           ...config
         }
         
+        console.log('Creating new config:', newConfig)
         const createdConfig = await this.createConfig(newConfig)
+        console.log('Created config result:', createdConfig)
         return !!createdConfig
       }
 
@@ -129,6 +132,8 @@ export const siteConfigOperations = {
   // Create initial site configuration
   async createConfig(config: Omit<SiteConfig, 'id' | 'created_at' | 'updated_at'>): Promise<SiteConfig | null> {
     try {
+      console.log('Attempting to create config in Supabase:', config)
+      
       const { data, error } = await supabaseAdmin
         .from('site_configs')
         .insert([config])
@@ -136,13 +141,15 @@ export const siteConfigOperations = {
         .single()
 
       if (error) {
-        console.error('Error creating site config:', error)
+        console.error('Supabase error creating site config:', error)
+        console.error('Error details:', JSON.stringify(error, null, 2))
         return null
       }
 
+      console.log('Successfully created config:', data)
       return data
     } catch (error) {
-      console.error('Error in createConfig:', error)
+      console.error('Exception in createConfig:', error)
       return null
     }
   },

@@ -75,11 +75,13 @@ export async function PUT(request: NextRequest) {
     }
 
     // Update configuration
+    console.log('Attempting to update config with:', updates)
     const success = await siteConfigOperations.updateConfig(updates)
     
     if (!success) {
+      console.error('Config update failed for updates:', updates)
       return NextResponse.json(
-        { message: 'Failed to update configuration' },
+        { message: 'Failed to update configuration - check server logs' },
         { status: 500 }
       )
     }
