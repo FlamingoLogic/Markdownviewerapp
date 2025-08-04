@@ -122,6 +122,10 @@ export function FileExplorer({
         isSelected={selectedFile === item.path}
         onClick={() => handleFileSelect(item)}
         onToggleExpand={() => toggleExpanded(item.path)}
+        expanded={expanded}
+        selectedFile={selectedFile}
+        handleFileSelect={handleFileSelect}
+        toggleExpanded={toggleExpanded}
       />
     ))
   }
@@ -228,7 +232,11 @@ function FileTreeItem({
   isExpanded,
   isSelected,
   onClick,
-  onToggleExpand
+  onToggleExpand,
+  expanded,
+  selectedFile,
+  handleFileSelect,
+  toggleExpanded
 }: {
   item: FileTreeItem
   depth: number
@@ -236,6 +244,10 @@ function FileTreeItem({
   isSelected: boolean
   onClick: () => void
   onToggleExpand: () => void
+  expanded: { [path: string]: boolean }
+  selectedFile?: string
+  handleFileSelect: (file: FileTreeItem) => void
+  toggleExpanded: (path: string) => void
 }) {
   const paddingLeft = depth * 16 + 8
 
@@ -293,10 +305,10 @@ function FileTreeItem({
               key={child.path}
               item={child}
               depth={depth + 1}
-              isExpanded={isExpanded}
-              isSelected={isSelected}
-              onClick={onClick}
-              onToggleExpand={onToggleExpand}
+              isExpanded={expanded[child.path]}
+              isSelected={selectedFile === child.path}
+              onClick={() => handleFileSelect(child)}
+              onToggleExpand={() => toggleExpanded(child.path)}
             />
           ))}
         </div>
