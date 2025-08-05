@@ -4,12 +4,14 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { GripVertical, Settings, LogOut } from 'lucide-react'
 import { storage } from '@/lib/utils'
+import { type SiteConfig } from '@/lib/supabase'
 import Link from 'next/link'
 
 interface ResizableLayoutProps {
   children: React.ReactNode[]
   className?: string
   onLayoutChange?: (layout: number[]) => void
+  siteConfig?: SiteConfig | null
 }
 
 interface PanelSizes {
@@ -32,7 +34,7 @@ const MIN_SIZES: PanelSizes = {
 
 const STORAGE_KEY = 'markdownviewer-panel-sizes'
 
-export function ResizableLayout({ children, className = '', onLayoutChange }: ResizableLayoutProps) {
+export function ResizableLayout({ children, className = '', onLayoutChange, siteConfig }: ResizableLayoutProps) {
   const [sizes, setSizes] = useState<PanelSizes>(DEFAULT_SIZES)
   const [isMobile, setIsMobile] = useState(false)
   const panelGroupRef = useRef<any>(null)
@@ -126,7 +128,7 @@ export function ResizableLayout({ children, className = '', onLayoutChange }: Re
       {/* Top Navigation Header */}
       <div className="bg-slate-900 border-b border-slate-800 p-3 flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <h1 className="text-lg font-semibold text-slate-200">Documentation</h1>
+          <h1 className="text-lg font-semibold text-slate-200">{siteConfig?.title || 'Documentation'}</h1>
         </div>
         <div className="flex items-center gap-2">
           <Link 
@@ -265,7 +267,7 @@ function MobileTabLayout({ children }: { children: React.ReactNode[] }) {
     <div className="h-screen flex flex-col bg-dark-950">
       {/* Top Navigation Header */}
       <div className="bg-slate-900 border-b border-slate-800 p-3 flex justify-between items-center">
-        <h1 className="text-lg font-semibold text-slate-200">Documentation</h1>
+        <h1 className="text-lg font-semibold text-slate-200">{siteConfig?.title || 'Documentation'}</h1>
         <div className="flex items-center gap-2">
           <Link 
             href="/admin"

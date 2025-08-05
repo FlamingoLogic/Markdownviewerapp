@@ -34,6 +34,13 @@ export default function HomePage() {
     loadSiteConfig()
   }, [])
 
+  // Update document title when site config changes
+  useEffect(() => {
+    if (siteConfig?.title) {
+      document.title = siteConfig.title
+    }
+  }, [siteConfig?.title])
+
   const checkAuthentication = async () => {
     try {
       const response = await fetch('/api/auth/check')
@@ -309,7 +316,7 @@ export default function HomePage() {
 
   // Show main documentation interface
   return (
-    <ResizableLayout>
+    <ResizableLayout siteConfig={siteConfig}>
       <FileExplorer
         files={files}
         onFileSelect={handleFileSelect}
