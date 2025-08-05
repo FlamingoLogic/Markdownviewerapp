@@ -190,28 +190,27 @@ export default function HomePage() {
           {/* Site Logo and Title */}
           <div className="text-center mb-8">
             {siteConfig?.logo_url ? (
-              <div className="relative group mb-4">
-                {/* Outer glow effect */}
-                <div className="absolute -inset-6 bg-gradient-to-r from-blue-500/20 via-purple-500/30 to-primary-500/20 rounded-3xl blur-2xl opacity-60 group-hover:opacity-80 transition-all duration-700 animate-pulse"></div>
+              <div className="relative group mb-6">
+                {/* Subtle outer glow */}
+                <div className="absolute -inset-8 bg-gradient-to-r from-primary-500/15 via-blue-500/20 to-purple-500/15 rounded-full blur-3xl opacity-40 group-hover:opacity-60 transition-opacity duration-1000"></div>
                 
-                {/* Middle glow layer */}
-                <div className="absolute -inset-3 bg-gradient-to-r from-primary-400/30 via-blue-400/40 to-purple-400/30 rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-all duration-500"></div>
-                
-                {/* Logo container with enhanced styling */}
-                <div className="relative p-3 bg-gradient-to-br from-slate-800/80 via-slate-700/60 to-slate-800/80 rounded-3xl backdrop-blur-sm border border-slate-600/50 group-hover:border-primary-400/60 transition-all duration-500 shadow-2xl">
+                {/* Logo with clean, modern styling */}
+                <div className="relative">
                   <img
                     src={siteConfig.logo_url}
                     alt="Site Logo"
-                    className="relative w-28 h-28 mx-auto rounded-2xl shadow-xl border-2 border-slate-500/30 group-hover:border-primary-300/50 transition-all duration-400 transform group-hover:scale-105 group-hover:rotate-1 object-contain bg-white/5 backdrop-blur-sm"
+                    className="w-32 h-32 mx-auto rounded-3xl shadow-2xl border-3 border-white/10 group-hover:border-primary-400/30 transition-all duration-500 transform group-hover:scale-110 object-cover bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm"
                     style={{
-                      filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.3)) brightness(1.1) contrast(1.1)',
-                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                      filter: 'drop-shadow(0 8px 32px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 20px rgba(59, 130, 246, 0.2)) brightness(1.05) contrast(1.08) saturate(1.1)',
+                      transition: 'all 0.5s cubic-bezier(0.23, 1, 0.32, 1)',
                     }}
                   />
                   
-                  {/* Decorative corner elements */}
-                  <div className="absolute top-1 right-1 w-2 h-2 bg-primary-400 rounded-full opacity-70 animate-ping"></div>
-                  <div className="absolute bottom-1 left-1 w-1.5 h-1.5 bg-blue-400 rounded-full opacity-60 animate-pulse"></div>
+                  {/* Subtle accent ring */}
+                  <div className="absolute inset-0 rounded-3xl border-2 border-gradient-to-r from-primary-400/20 via-transparent to-blue-400/20 pointer-events-none"></div>
+                  
+                  {/* Minimal corner accent */}
+                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-primary-400 to-blue-500 rounded-full shadow-lg opacity-80 animate-pulse"></div>
                 </div>
               </div>
             ) : (
