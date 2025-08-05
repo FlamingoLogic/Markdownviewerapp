@@ -380,7 +380,7 @@ export default function AdminPage() {
                       <div className="relative group">
                         <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 via-purple-500 to-blue-500 rounded-lg blur opacity-30"></div>
                         <div className="relative w-12 h-12 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 rounded-lg flex items-center justify-center border border-primary-500/30">
-                          <FileText className="w-6 h-6 text-white" />
+                          <Settings className="w-6 h-6 text-white" />
                         </div>
                       </div>
                     )}
