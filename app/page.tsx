@@ -191,26 +191,26 @@ export default function HomePage() {
           <div className="text-center mb-8">
             {siteConfig?.logo_url ? (
               <div className="relative group mb-6">
-                {/* Subtle outer glow */}
-                <div className="absolute -inset-8 bg-gradient-to-r from-primary-500/15 via-blue-500/20 to-purple-500/15 rounded-full blur-3xl opacity-40 group-hover:opacity-60 transition-opacity duration-1000"></div>
-                
-                {/* Logo with clean, modern styling */}
-                <div className="relative">
+                {/* Premium floating card approach */}
+                <div className="relative p-6 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 rounded-2xl border border-slate-700/50 shadow-2xl backdrop-blur-lg group-hover:border-primary-500/30 transition-all duration-700">
+                  {/* Floating glow behind card */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary-600/20 via-blue-600/30 to-purple-600/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  
+                  {/* Logo with premium treatment */}
                   <img
                     src={siteConfig.logo_url}
                     alt="Site Logo"
-                    className="w-32 h-32 mx-auto rounded-3xl shadow-2xl border-3 border-white/10 group-hover:border-primary-400/30 transition-all duration-500 transform group-hover:scale-110 object-cover bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm"
+                    className="relative w-24 h-24 mx-auto rounded-xl shadow-lg object-contain group-hover:scale-105 transition-transform duration-500"
                     style={{
-                      filter: 'drop-shadow(0 8px 32px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 20px rgba(59, 130, 246, 0.2)) brightness(1.05) contrast(1.08) saturate(1.1)',
-                      transition: 'all 0.5s cubic-bezier(0.23, 1, 0.32, 1)',
+                      filter: 'brightness(1.1) contrast(1.1) saturate(1.15)',
+                      maxWidth: '100%',
+                      maxHeight: '100%'
                     }}
                   />
                   
-                  {/* Subtle accent ring */}
-                  <div className="absolute inset-0 rounded-3xl border-2 border-gradient-to-r from-primary-400/20 via-transparent to-blue-400/20 pointer-events-none"></div>
-                  
-                  {/* Minimal corner accent */}
-                  <div className="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-br from-primary-400 to-blue-500 rounded-full shadow-lg opacity-80 animate-pulse"></div>
+                  {/* Elegant corner indicators */}
+                  <div className="absolute top-3 right-3 w-1 h-1 bg-primary-400 rounded-full opacity-60"></div>
+                  <div className="absolute bottom-3 left-3 w-1 h-1 bg-blue-400 rounded-full opacity-50"></div>
                 </div>
               </div>
             ) : (
