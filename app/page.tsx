@@ -190,13 +190,29 @@ export default function HomePage() {
           {/* Site Logo and Title */}
           <div className="text-center mb-8">
             {siteConfig?.logo_url ? (
-              <div className="relative group">
-                <div className="absolute -inset-2 bg-gradient-to-r from-primary-600 via-purple-600 to-primary-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-500 animate-pulse"></div>
-                <img
-                  src={siteConfig.logo_url}
-                  alt="Site Logo"
-                  className="relative w-24 h-24 mx-auto mb-4 rounded-2xl shadow-2xl border-2 border-slate-700 group-hover:border-primary-500 transition-all duration-300 transform group-hover:scale-105"
-                />
+              <div className="relative group mb-4">
+                {/* Outer glow effect */}
+                <div className="absolute -inset-6 bg-gradient-to-r from-blue-500/20 via-purple-500/30 to-primary-500/20 rounded-3xl blur-2xl opacity-60 group-hover:opacity-80 transition-all duration-700 animate-pulse"></div>
+                
+                {/* Middle glow layer */}
+                <div className="absolute -inset-3 bg-gradient-to-r from-primary-400/30 via-blue-400/40 to-purple-400/30 rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-all duration-500"></div>
+                
+                {/* Logo container with enhanced styling */}
+                <div className="relative p-3 bg-gradient-to-br from-slate-800/80 via-slate-700/60 to-slate-800/80 rounded-3xl backdrop-blur-sm border border-slate-600/50 group-hover:border-primary-400/60 transition-all duration-500 shadow-2xl">
+                  <img
+                    src={siteConfig.logo_url}
+                    alt="Site Logo"
+                    className="relative w-28 h-28 mx-auto rounded-2xl shadow-xl border-2 border-slate-500/30 group-hover:border-primary-300/50 transition-all duration-400 transform group-hover:scale-105 group-hover:rotate-1 object-contain bg-white/5 backdrop-blur-sm"
+                    style={{
+                      filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.3)) brightness(1.1) contrast(1.1)',
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                    }}
+                  />
+                  
+                  {/* Decorative corner elements */}
+                  <div className="absolute top-1 right-1 w-2 h-2 bg-primary-400 rounded-full opacity-70 animate-ping"></div>
+                  <div className="absolute bottom-1 left-1 w-1.5 h-1.5 bg-blue-400 rounded-full opacity-60 animate-pulse"></div>
+                </div>
               </div>
             ) : (
               <div className="relative group">
