@@ -119,7 +119,7 @@ export function ResizableLayout({ children, className = '', onLayoutChange, site
 
   // Mobile layout - show only one panel at a time
   if (isMobile) {
-    return <MobileTabLayout>{children}</MobileTabLayout>
+    return <MobileTabLayout siteConfig={siteConfig}>{children}</MobileTabLayout>
   }
 
   // Desktop layout - resizable panels
@@ -254,7 +254,7 @@ export function ResizableLayout({ children, className = '', onLayoutChange, site
 }
 
 // Mobile tab layout for responsive design
-function MobileTabLayout({ children }: { children: React.ReactNode[] }) {
+function MobileTabLayout({ children, siteConfig }: { children: React.ReactNode[], siteConfig?: SiteConfig | null }) {
   const [activeTab, setActiveTab] = useState(0)
 
   const tabs = [
