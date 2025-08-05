@@ -190,14 +190,39 @@ export default function HomePage() {
           {/* Site Logo and Title */}
           <div className="text-center mb-8">
             {siteConfig?.logo_url ? (
-              <img
-                src={siteConfig.logo_url}
-                alt="Site Logo"
-                className="w-16 h-16 mx-auto mb-4 rounded-lg"
-              />
+              <div className="relative group">
+                <div className="absolute -inset-2 bg-gradient-to-r from-primary-600 via-purple-600 to-primary-600 rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-500 animate-pulse"></div>
+                <img
+                  src={siteConfig.logo_url}
+                  alt="Site Logo"
+                  className="relative w-24 h-24 mx-auto mb-4 rounded-2xl shadow-2xl border-2 border-slate-700 group-hover:border-primary-500 transition-all duration-300 transform group-hover:scale-105"
+                />
+              </div>
             ) : (
-              <div className="w-16 h-16 mx-auto mb-4 bg-primary-600 rounded-lg flex items-center justify-center">
-                <FileText className="w-8 h-8 text-white" />
+              <div className="relative group">
+                {/* Animated background layers */}
+                <div className="absolute -inset-4 bg-gradient-to-r from-primary-500 via-purple-500 to-blue-500 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-700 animate-pulse"></div>
+                <div className="absolute -inset-2 bg-gradient-to-r from-slate-600 to-slate-800 rounded-2xl blur-md opacity-40"></div>
+                
+                {/* Main logo container */}
+                <div className="relative w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 rounded-2xl flex items-center justify-center shadow-2xl border border-primary-500/30 group-hover:border-primary-400/50 transition-all duration-500 transform group-hover:scale-105 group-hover:rotate-1">
+                  {/* Icon with animated glow */}
+                  <div className="relative">
+                    <FileText className="w-12 h-12 text-white drop-shadow-lg transform transition-transform duration-300 group-hover:scale-110" />
+                    <div className="absolute inset-0 w-12 h-12 bg-white rounded-full opacity-20 blur-xl animate-pulse"></div>
+                  </div>
+                  
+                  {/* Decorative elements */}
+                  <div className="absolute top-2 right-2 w-2 h-2 bg-primary-300 rounded-full animate-ping"></div>
+                  <div className="absolute bottom-2 left-2 w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>
+                </div>
+                
+                {/* Floating particles effect */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute top-0 left-1/4 w-1 h-1 bg-primary-400 rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
+                  <div className="absolute bottom-4 right-1/3 w-0.5 h-0.5 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '1s'}}></div>
+                  <div className="absolute top-1/3 right-0 w-0.5 h-0.5 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '2s'}}></div>
+                </div>
               </div>
             )}
             

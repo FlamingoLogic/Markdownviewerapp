@@ -341,17 +341,62 @@ export default function AdminPage() {
                 />
               </div>
 
-              <div>
+              <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Logo URL
+                  🎨 Site Logo URL
                 </label>
-                <input
-                  type="url"
-                  value={config.logo_url || ''}
-                  onChange={(e) => setConfig({ ...config, logo_url: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="https://example.com/logo.png"
-                />
+                <div className="space-y-3">
+                  <input
+                    type="url"
+                    value={config.logo_url || ''}
+                    onChange={(e) => setConfig({ ...config, logo_url: e.target.value })}
+                    className="input-primary"
+                    placeholder="https://example.com/your-logo.png"
+                  />
+                  
+                  {/* Logo Preview */}
+                  <div className="flex items-center gap-4 p-3 bg-slate-800/50 rounded-lg border border-slate-700">
+                    <div className="text-sm text-slate-300">Preview:</div>
+                    {config.logo_url ? (
+                      <div className="relative group">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-primary-600 via-purple-600 to-primary-600 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
+                        <img
+                          src={config.logo_url}
+                          alt="Logo Preview"
+                          className="relative w-12 h-12 rounded-lg border border-slate-600 shadow-lg"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling!.style.display = 'flex';
+                          }}
+                        />
+                        <div className="hidden w-12 h-12 bg-red-900/20 border border-red-700 rounded-lg items-center justify-center">
+                          <span className="text-red-400 text-xs">✗</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="relative group">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 via-purple-500 to-blue-500 rounded-lg blur opacity-30"></div>
+                        <div className="relative w-12 h-12 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 rounded-lg flex items-center justify-center border border-primary-500/30">
+                          <FileText className="w-6 h-6 text-white" />
+                        </div>
+                      </div>
+                    )}
+                    <div className="text-xs text-slate-400">
+                      {config.logo_url ? 'Custom logo' : 'Dynamic default logo'}
+                    </div>
+                  </div>
+
+                  {/* Logo Guidelines */}
+                  <div className="text-xs text-slate-400 space-y-1">
+                    <div className="font-medium text-slate-300">💡 Logo Tips:</div>
+                    <ul className="space-y-1 ml-4">
+                      <li>• Best size: 128x128px or larger (square format)</li>
+                      <li>• Formats: PNG, JPG, or SVG</li>
+                      <li>• Use HTTPS URLs for security</li>
+                      <li>• Leave empty for beautiful animated default</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
 
               <div className="md:col-span-2">
