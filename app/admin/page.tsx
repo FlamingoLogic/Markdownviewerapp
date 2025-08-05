@@ -366,7 +366,10 @@ export default function AdminPage() {
                           className="relative w-12 h-12 rounded-lg border border-slate-600 shadow-lg"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
-                            e.currentTarget.nextElementSibling!.style.display = 'flex';
+                            const errorDiv = e.currentTarget.nextElementSibling as HTMLElement;
+                            if (errorDiv) {
+                              errorDiv.style.display = 'flex';
+                            }
                           }}
                         />
                         <div className="hidden w-12 h-12 bg-red-900/20 border border-red-700 rounded-lg items-center justify-center">
