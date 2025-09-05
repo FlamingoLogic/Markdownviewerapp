@@ -12,13 +12,13 @@ This document contains the default passwords for accessing different parts of th
 
 ### Site Access (Main Application)
 - **Username**: Not required
-- **Password**: `TempSite2024!`
+- **Password**: `flamingo`
 - **Purpose**: Access to view markdown files and browse documentation
 - **Usage**: Enter this password on the main login screen to access the file viewer
 
 ### Admin Panel Access
-- **Username**: Not required  
-- **Password**: `TempAdmin2024!`
+- **Username**: Not required
+- **Password**: `flamingo`
 - **Purpose**: Administrative configuration and settings
 - **Usage**: Access via `/admin` route or "Admin Panel" button in the top navigation
 - **Features**:
@@ -49,8 +49,8 @@ GITHUB_TOKEN=your_github_personal_access_token
 ### Database Schema
 The passwords are stored in the `site_config` table:
 ```sql
-- site_password_hash: VARCHAR (bcrypt hash of TempSite2024!)
-- admin_password_hash: VARCHAR (bcrypt hash of TempAdmin2024!)
+- site_password_hash: VARCHAR (bcrypt hash of flamingo)
+- admin_password_hash: VARCHAR (bcrypt hash of flamingo)
 ```
 
 ## 🚨 Security Notes
@@ -70,7 +70,7 @@ The passwords are stored in the `site_config` table:
 ## 🛠️ Changing Default Passwords
 
 ### Via Admin Panel
-1. Login to admin panel with `TempAdmin2024!`
+1. Login to admin panel with `flamingo`
 2. Navigate to "Security Settings" section
 3. Update both site and admin passwords
 4. Save configuration to update database
@@ -95,6 +95,6 @@ If you forget the passwords:
 
 ---
 
-**Last Updated**: January 2025  
-**Version**: 1.0  
+**Last Updated**: January 2025
+**Version**: 1.0
 **Status**: Active for Development/Testing

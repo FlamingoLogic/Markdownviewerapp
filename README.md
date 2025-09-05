@@ -30,7 +30,7 @@ A modern, self-hosted documentation webapp that displays markdown files from Git
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 18+
 - GitHub repository with markdown files
 - [Supabase account](https://supabase.com) (free tier)
 - [AWS account](https://aws.amazon.com/amplify/) for Amplify (free tier)
@@ -56,7 +56,7 @@ GITHUB_TOKEN=optional_for_private_repos
 🚀 **Quick Setup Guide**: Follow [`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md) for complete step-by-step instructions (5 minutes)
 
 **Why Supabase Setup is Better:**
-- ✅ **Persistent configuration** - settings save permanently  
+- ✅ **Persistent configuration** - settings save permanently
 - ✅ **Production-ready** security and performance
 - ✅ **Admin panel works fully** - make real configuration changes
 - ✅ **Reusable template** for multiple documentation sites
@@ -64,8 +64,8 @@ GITHUB_TOKEN=optional_for_private_repos
 **Alternative**: The app includes demo/mock configuration for immediate testing, but **Supabase is strongly recommended** for any real use.
 
 **🔐 Default Access (after Supabase setup):**
-- **Site Password**: `TempSite2024!`
-- **Admin Password**: `TempAdmin2024!`
+- **Site Password**: `flamingo`
+- **Admin Password**: `flamingo`
 
 ⚠️ **Important**: Change these in the admin panel immediately for security!
 
@@ -233,10 +233,10 @@ Perfect for agencies, consultants, or organizations managing multiple documentat
 
 ### ✅ **COMPLETED - Ready for Deployment!**
 - [x] **Core markdown viewing** with beautiful dark theme
-- [x] **3-column resizable layout** (Cursor-style interface)  
+- [x] **3-column resizable layout** (Cursor-style interface)
 - [x] **GitHub integration** with auto-refresh
 - [x] **Authentication system** with password protection
-- [x] **Admin configuration panel** 
+- [x] **Admin configuration panel**
 - [x] **Security hardening** with rate limiting
 - [x] **Error handling & monitoring**
 - [x] **AWS Amplify deployment configuration**
@@ -287,7 +287,7 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 
 ## 🚀 **READY FOR DEPLOYMENT!**
 
-Your markdown documentation viewer is **complete and ready** for AWS Amplify deployment! 
+Your markdown documentation viewer is **complete and ready** for AWS Amplify deployment!
 
 ### **Next Steps:**
 
@@ -319,7 +319,7 @@ Run the SQL schema from the Quick Start section above.
 #### **5. Configure Your Site**
 Visit `/admin` with your admin password to configure:
 - GitHub repository and folders
-- Site branding and passwords  
+- Site branding and passwords
 - Auto-refresh settings
 - Chat integration
 

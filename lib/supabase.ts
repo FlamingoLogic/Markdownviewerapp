@@ -3,9 +3,9 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
 // Amplify workaround: Use NEXT_PUBLIC_ prefix since server-side env vars don't work
-const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || 
-                          process.env.SUPABASE_SERVICE_ROLE_KEY ||
-                          'placeholder-service-key'
+const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY ||
+  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  'placeholder-service-key'
 
 // Client for browser usage
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
@@ -40,6 +40,7 @@ export const siteConfigOperations = {
     try {
       // If Supabase is not configured (using placeholder URL), return mock config
       if (supabaseUrl === 'https://placeholder.supabase.co') {
+        console.log('Using placeholder Supabase URL, returning mock config')
         return {
           id: 'demo-config',
           title: 'Demo Documentation Site',
@@ -52,8 +53,8 @@ export const siteConfigOperations = {
           auto_refresh_enabled: true,
           refresh_interval_minutes: 15,
           last_sync_at: new Date().toISOString(),
-          site_password_hash: '$2a$10$.Z5wZpZ4xbTVjjqT39AUKOtqGTO2nLD0E3t2NU8atQUmV/KFU6LlC', // TempSite2024!
-          admin_password_hash: '$2a$10$wwQvHyDwBeQW0rQMFttmLuJk8bshJai6tE0nRo4w71BjLYJQlmeAu', // TempAdmin2024!
+          site_password_hash: '$2a$12$AKzL6gsTOE/EA67GiEH9kuIbEmSrAaFVu30d10cX0BrNkMCwK9PSq', // flamingo
+          admin_password_hash: '$2a$12$zjw5v.2GsDHo2CWpDsWMs./VY2WCnZx0wzKI0hKekON6Cltd0.esS', // flamingo
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }
@@ -66,13 +67,51 @@ export const siteConfigOperations = {
 
       if (error) {
         console.error('Error fetching site config:', error)
-        return null
+        console.log('Supabase connection failed, falling back to demo config')
+
+        // Fallback to demo config if Supabase connection fails
+        return {
+          id: 'fallback-config',
+          title: 'Documentation Site',
+          slogan: 'Your documentation, beautifully organized',
+          help_text: 'Welcome to your documentation site! Set up Supabase to customize this.',
+          github_repo: 'your-username/your-repo',
+          branch: 'main',
+          folders: ['docs', 'guides'],
+          iframe_url: 'https://example.com/chat',
+          auto_refresh_enabled: true,
+          refresh_interval_minutes: 15,
+          last_sync_at: new Date().toISOString(),
+          site_password_hash: '$2a$12$AKzL6gsTOE/EA67GiEH9kuIbEmSrAaFVu30d10cX0BrNkMCwK9PSq', // flamingo
+          admin_password_hash: '$2a$12$zjw5v.2GsDHo2CWpDsWMs./VY2WCnZx0wzKI0hKekON6Cltd0.esS', // flamingo
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
       }
 
       return data
     } catch (error) {
       console.error('Error in getConfig:', error)
-      return null
+      console.log('Exception in getConfig, falling back to demo config')
+
+      // Fallback to demo config on any exception
+      return {
+        id: 'exception-fallback-config',
+        title: 'Documentation Site',
+        slogan: 'Your documentation, beautifully organized',
+        help_text: 'Welcome to your documentation site! Check your Supabase configuration.',
+        github_repo: 'your-username/your-repo',
+        branch: 'main',
+        folders: ['docs', 'guides'],
+        iframe_url: 'https://example.com/chat',
+        auto_refresh_enabled: true,
+        refresh_interval_minutes: 15,
+        last_sync_at: new Date().toISOString(),
+        site_password_hash: '$2a$10$.Z5wZpZ4xbTVjjqT39AUKOtqGTO2nLD0E3t2NU8atQUmV/KFU6LlC', // TempSite2024!
+        admin_password_hash: '$2a$10$wwQvHyDwBeQW0rQMFttmLuJk8bshJai6tE0nRo4w71BjLYJQlmeAu', // TempAdmin2024!
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
     }
   },
 
@@ -87,12 +126,12 @@ export const siteConfigOperations = {
 
       // Get current config to ensure we have a valid ID
       const currentConfig = await this.getConfig()
-      
+
       if (!currentConfig) {
         // No config exists, create a new one
         console.log('No configuration found, creating initial configuration...')
         console.log('Config data received:', config)
-        
+
         const newConfig = {
           title: config.title || 'Documentation Site',
           github_repo: config.github_repo || 'your-username/your-repo',
@@ -104,7 +143,7 @@ export const siteConfigOperations = {
           admin_password_hash: config.admin_password_hash || '$2a$10$wwQvHyDwBeQW0rQMFttmLuJk8bshJai6tE0nRo4w71BjLYJQlmeAu',
           ...config
         }
-        
+
         console.log('Creating new config:', newConfig)
         const createdConfig = await this.createConfig(newConfig)
         console.log('Created config result:', createdConfig)
@@ -114,13 +153,13 @@ export const siteConfigOperations = {
       // Update existing config
       // CRITICAL: Never allow empty password hashes to overwrite existing ones
       const updateData = { ...config, updated_at: new Date().toISOString() }
-      
+
       // Remove password fields if they're empty (preserve existing hashes)
       if (!updateData.site_password_hash || updateData.site_password_hash.trim() === '') {
         delete updateData.site_password_hash
         console.log('Skipping empty site_password_hash to preserve existing')
       }
-      
+
       if (!updateData.admin_password_hash || updateData.admin_password_hash.trim() === '') {
         delete updateData.admin_password_hash
         console.log('Skipping empty admin_password_hash to preserve existing')
@@ -147,7 +186,7 @@ export const siteConfigOperations = {
   async createConfig(config: Omit<SiteConfig, 'id' | 'created_at' | 'updated_at'>): Promise<SiteConfig | null> {
     try {
       console.log('Attempting to create config in Supabase:', config)
-      
+
       const { data, error } = await supabaseAdmin
         .from('site_configs')
         .insert([config])
