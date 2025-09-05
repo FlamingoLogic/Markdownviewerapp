@@ -17,6 +17,7 @@ import {
   Eye,
   ChevronUp
 } from 'lucide-react'
+import DOMPurify from 'dompurify'
 import { FileTreeItem } from '@/lib/github'
 import { ContentProcessor } from '@/lib/content-validator'
 import { formatRelativeTime, formatDate, copyToClipboard, cn } from '@/lib/utils'
@@ -90,7 +91,27 @@ export function MarkdownViewer({
         // Enhance code blocks
         html = enhanceCodeBlocks(html)
 
-        setProcessedContent(html)
+        // Sanitize HTML to prevent XSS attacks
+        const sanitizedHtml = DOMPurify.sanitize(html, {
+          ALLOWED_TAGS: [
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'p', 'br', 'hr',
+            'ul', 'ol', 'li',
+            'blockquote', 'pre', 'code',
+            'strong', 'b', 'em', 'i', 'u', 'del', 'ins',
+            'a', 'img',
+            'table', 'thead', 'tbody', 'tr', 'th', 'td',
+            'div', 'span',
+            'details', 'summary'
+          ],
+          ALLOWED_ATTR: [
+            'id', 'class', 'href', 'src', 'alt', 'title',
+            'target', 'rel', 'colspan', 'rowspan'
+          ],
+          ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp|xxx):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+        })
+
+        setProcessedContent(sanitizedHtml)
       } catch (err) {
         console.error('Error processing markdown:', err)
         setProcessedContent('<p class="text-error-400">Failed to process markdown content</p>')

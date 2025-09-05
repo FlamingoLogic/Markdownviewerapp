@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { PasswordService } from '@/lib/auth'
 import { siteConfigOperations } from '@/lib/supabase'
 import { getSecurityHeaders } from '@/lib/auth'
+import { withDebugSecurity } from '@/lib/debug-security'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(request: NextRequest) {
+async function handler(request: NextRequest) {
   try {
     const siteConfig = await siteConfigOperations.getConfig()
     if (!siteConfig) {
@@ -46,3 +47,5 @@ export async function GET(request: NextRequest) {
     )
   }
 }
+
+export const GET = withDebugSecurity(handler)

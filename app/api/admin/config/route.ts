@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { siteConfigOperations } from '@/lib/supabase'
 import bcrypt from 'bcryptjs'
+import { cookies } from 'next/headers'
+import { CookieService, SessionService, getSecurityHeaders } from '@/lib/auth'
+import { withCSRFProtection } from '@/lib/csrf-protection'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
 function isAuthenticated(request: NextRequest): boolean {
   try {
-    // Check for admin secret in header or query param
-    const adminSecret = request.headers.get('x-admin-secret') || 
-                       request.nextUrl.searchParams.get('admin_secret') ||
-                       request.headers.get('authorization')?.replace('Bearer ', '')
+    // Use proper session-based authentication
+    const cookieStore = cookies()
+    const sessionCookie = cookieStore.get('admin_session')
+    const session = CookieService.parseSessionFromCookie(sessionCookie?.value)
     
-    // Use environment variable or fallback to our temp password
-    const validSecret = process.env.ADMIN_SECRET || 'TempAdmin2024!'
-    
-    return adminSecret === validSecret
+    return SessionService.isAdminSession(session)
   } catch (error) {
     console.error('Auth check error:', error)
     return false
@@ -26,8 +26,11 @@ export async function GET(request: NextRequest) {
   try {
     if (!isAuthenticated(request)) {
       return NextResponse.json(
-        { message: 'Unauthorized - Admin secret required' },
-        { status: 401 }
+        { message: 'Unauthorized - Admin authentication required' },
+        { 
+          status: 401,
+          headers: getSecurityHeaders()
+        }
       )
     }
 
@@ -52,12 +55,15 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
+async function putHandler(request: NextRequest) {
   try {
     if (!isAuthenticated(request)) {
       return NextResponse.json(
-        { message: 'Unauthorized - Admin secret required' },
-        { status: 401 }
+        { message: 'Unauthorized - Admin authentication required' },
+        { 
+          status: 401,
+          headers: getSecurityHeaders()
+        }
       )
     }
 
@@ -114,3 +120,5 @@ export async function PUT(request: NextRequest) {
     )
   }
 }
+
+export const PUT = withCSRFProtection(putHandler)

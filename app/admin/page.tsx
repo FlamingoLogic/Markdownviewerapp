@@ -194,59 +194,112 @@ export default function AdminPage() {
   // Admin login form
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-dark-950 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="card-elevated p-6">
-            <div className="flex items-center gap-2 mb-6">
-              <Shield className="w-6 h-6 text-primary-400" />
-              <h1 className="text-xl font-semibold text-slate-100">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 25px 25px, rgba(255,255,255,0.2) 2px, transparent 0)`,
+            backgroundSize: '50px 50px'
+          }} />
+        </div>
+        
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
+        </div>
+
+        <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
+          <div className="w-full max-w-md">
+            {/* Header */}
+            <div className="text-center mb-8">
+              <div className="relative inline-block mb-6">
+                <div className="absolute -inset-4 bg-gradient-to-r from-orange-500/30 via-red-500/30 to-orange-500/30 rounded-full blur-xl opacity-60" />
+                <div className="relative w-20 h-20 mx-auto bg-gradient-to-br from-orange-600 via-orange-700 to-red-700 rounded-2xl flex items-center justify-center shadow-2xl border border-orange-500/30">
+                  <Shield className="w-10 h-10 text-white drop-shadow-lg" />
+                </div>
+              </div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100 bg-clip-text text-transparent mb-2">
                 Admin Access
               </h1>
+              <p className="text-slate-400">
+                Administrative configuration panel
+              </p>
             </div>
 
-            <form id="admin-login-form" onSubmit={handleAdminLogin} className="space-y-4" autoComplete="off">
-              <div>
-                <label htmlFor="admin-password" className="sr-only">
-                  Admin Password
-                </label>
-                <input
-                  id="admin-password"
-                  name="admin-password"
-                  type="password"
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                  placeholder="Enter admin password"
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  disabled={isLoading}
-                  autoFocus
-                  autoComplete="new-password"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  spellCheck="false"
-                />
+            {/* Login Card */}
+            <div className="bg-slate-900/70 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-8 shadow-2xl">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="p-2 rounded-lg bg-orange-500/20 text-orange-400">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <h2 className="text-xl font-semibold text-white">
+                  Admin Authentication
+                </h2>
               </div>
 
-              {error && (
-                <div className="text-sm text-error-400 bg-error-900/20 border border-error-700/30 rounded-lg p-3">
-                  {error}
+              <form id="admin-login-form" onSubmit={handleAdminLogin} className="space-y-6" autoComplete="off">
+                <div className="space-y-2">
+                  <label htmlFor="admin-password" className="text-sm font-medium text-slate-300">
+                    Admin Password
+                  </label>
+                  <input
+                    id="admin-password"
+                    name="admin-password"
+                    type="password"
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    placeholder="Enter admin password"
+                    className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/50 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                    disabled={isLoading}
+                    autoFocus
+                    autoComplete="new-password"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck="false"
+                  />
+                  <p className="text-xs text-slate-500">
+                    Enter your administrator credentials to access the control panel
+                  </p>
                 </div>
-              )}
 
-              <button
-                type="submit"
-                disabled={isLoading || !adminPassword.trim()}
-                className="btn-primary w-full"
-              >
-                {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Checking...</span>
+                {error && (
+                  <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
+                    <p className="text-sm text-red-400">{error}</p>
                   </div>
-                ) : (
-                  'Access Admin Panel'
                 )}
-              </button>
-            </form>
+
+                <button
+                  type="submit"
+                  disabled={isLoading || !adminPassword.trim()}
+                  className="w-full py-4 px-6 bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 focus:ring-orange-500 disabled:from-orange-800 disabled:to-orange-900 rounded-xl font-semibold text-white transition-all duration-200 flex items-center justify-center space-x-2 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Authenticating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Shield className="w-5 h-5" />
+                      <span>Access Admin Panel</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+
+            {/* Security Notice */}
+            <div className="mt-6 p-4 bg-slate-800/30 backdrop-blur-sm rounded-xl border border-slate-700/30">
+              <div className="flex items-start space-x-3">
+                <Shield className="w-5 h-5 text-orange-400 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h3 className="text-sm font-medium text-slate-200 mb-1">Security Notice</h3>
+                  <p className="text-xs text-slate-400">
+                    This area is restricted to authorized administrators only. All access attempts are logged and monitored.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -6,6 +6,7 @@ import { ResizableLayout } from '@/components/layout/ResizableLayout'
 import { FileExplorer } from '@/components/FileExplorer'
 import { MarkdownViewer } from '@/components/MarkdownViewer'
 import { ChatPanel } from '@/components/ChatPanel'
+import { AccessPortal } from '@/components/AccessPortal'
 import { siteConfigOperations, type SiteConfig } from '@/lib/supabase'
 import { FileTreeItem } from '@/lib/github'
 import { logError } from '@/lib/error-tracking'
@@ -69,7 +70,7 @@ export default function HomePage() {
     }
   }
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent, isAdmin: boolean = false) => {
     e.preventDefault()
     
     if (!password.trim()) return
@@ -77,7 +78,8 @@ export default function HomePage() {
     setAuthState(prev => ({ ...prev, isLoading: true, error: undefined }))
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const endpoint = isAdmin ? '/api/admin/login' : '/api/auth/login'
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
@@ -86,6 +88,12 @@ export default function HomePage() {
       const data = await response.json()
 
       if (response.ok) {
+        if (isAdmin) {
+          // Redirect to admin panel
+          window.location.href = '/admin'
+          return
+        }
+        
         setAuthState({
           isAuthenticated: true,
           isLoading: false,
@@ -101,11 +109,6 @@ export default function HomePage() {
         })
         // Clear password field on error to prevent caching interference
         setPassword('')
-        // Force form reset to clear any browser autocomplete
-        const form = document.getElementById('site-login-form') as HTMLFormElement
-        if (form) {
-          setTimeout(() => form.reset(), 100)
-        }
       }
     } catch (error) {
       setAuthState({
@@ -184,174 +187,7 @@ export default function HomePage() {
 
   // Show landing page if not authenticated
   if (!authState.isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-dark-950 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          {/* Site Logo and Title */}
-          <div className="text-center mb-8">
-            {siteConfig?.logo_url ? (
-              <div className="relative group mb-6">
-                {/* Premium floating card approach */}
-                <div className="relative p-6 bg-gradient-to-br from-slate-900/90 via-slate-800/80 to-slate-900/90 rounded-2xl border border-slate-700/50 shadow-2xl backdrop-blur-lg group-hover:border-primary-500/30 transition-all duration-700">
-                  {/* Floating glow behind card */}
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary-600/20 via-blue-600/30 to-purple-600/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                  
-                  {/* Logo with premium treatment */}
-                  <img
-                    src={siteConfig.logo_url}
-                    alt="Site Logo"
-                    className="relative w-24 h-24 mx-auto rounded-xl shadow-lg object-contain group-hover:scale-105 transition-transform duration-500"
-                    style={{
-                      filter: 'brightness(1.1) contrast(1.1) saturate(1.15)',
-                      maxWidth: '100%',
-                      maxHeight: '100%'
-                    }}
-                  />
-                  
-                  {/* Elegant corner indicators */}
-                  <div className="absolute top-3 right-3 w-1 h-1 bg-primary-400 rounded-full opacity-60"></div>
-                  <div className="absolute bottom-3 left-3 w-1 h-1 bg-blue-400 rounded-full opacity-50"></div>
-                </div>
-              </div>
-            ) : (
-              <div className="relative group">
-                {/* Animated background layers */}
-                <div className="absolute -inset-4 bg-gradient-to-r from-primary-500 via-purple-500 to-blue-500 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-700 animate-pulse"></div>
-                <div className="absolute -inset-2 bg-gradient-to-r from-slate-600 to-slate-800 rounded-2xl blur-md opacity-40"></div>
-                
-                {/* Main logo container */}
-                <div className="relative w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 rounded-2xl flex items-center justify-center shadow-2xl border border-primary-500/30 group-hover:border-primary-400/50 transition-all duration-500 transform group-hover:scale-105 group-hover:rotate-1">
-                  {/* Icon with animated glow */}
-                  <div className="relative">
-                    <FileText className="w-12 h-12 text-white drop-shadow-lg transform transition-transform duration-300 group-hover:scale-110" />
-                    <div className="absolute inset-0 w-12 h-12 bg-white rounded-full opacity-20 blur-xl animate-pulse"></div>
-                  </div>
-                  
-                  {/* Decorative elements */}
-                  <div className="absolute top-2 right-2 w-2 h-2 bg-primary-300 rounded-full animate-ping"></div>
-                  <div className="absolute bottom-2 left-2 w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse"></div>
-                </div>
-                
-                {/* Floating particles effect */}
-                <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute top-0 left-1/4 w-1 h-1 bg-primary-400 rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
-                  <div className="absolute bottom-4 right-1/3 w-0.5 h-0.5 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '1s'}}></div>
-                  <div className="absolute top-1/3 right-0 w-0.5 h-0.5 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '2s'}}></div>
-                </div>
-              </div>
-            )}
-            
-            <h1 className="text-2xl font-bold text-slate-100 mb-2">
-              {siteConfig?.title || 'Documentation'}
-            </h1>
-            
-            {siteConfig?.slogan && (
-              <p className="text-slate-400">
-                {siteConfig.slogan}
-              </p>
-            )}
-          </div>
-
-          {/* Login Form */}
-          <div className="card-elevated p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Lock className="w-5 h-5 text-primary-400" />
-              <h2 className="text-lg font-semibold text-slate-100">
-                Access Required
-              </h2>
-            </div>
-
-            {siteConfig?.help_text && (
-              <div className="mb-4 p-3 bg-slate-900/50 rounded-lg text-sm text-slate-300">
-                {siteConfig.help_text}
-              </div>
-            )}
-
-            <form id="site-login-form" onSubmit={handleLogin} className="space-y-4" autoComplete="off">
-              <div>
-                <label htmlFor="password" className="sr-only">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  name="site-password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password"
-                  className="input-primary w-full"
-                  disabled={authState.isLoading}
-                  autoFocus
-                  autoComplete="new-password"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  spellCheck="false"
-                />
-              </div>
-
-              {authState.error && (
-                <div className="text-sm text-error-400 bg-error-900/20 border border-error-700/30 rounded-lg p-3">
-                  {authState.error}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={authState.isLoading || !password.trim()}
-                className="btn-primary w-full"
-              >
-                {authState.isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Checking...</span>
-                  </div>
-                ) : (
-                  'Access Documentation'
-                )}
-              </button>
-            </form>
-          </div>
-
-          {/* Features */}
-          <div className="mt-8 grid grid-cols-2 gap-4 text-center">
-            <div className="card p-4">
-              <Github className="w-6 h-6 text-primary-400 mx-auto mb-2" />
-              <h3 className="text-sm font-medium text-slate-200 mb-1">
-                GitHub Sync
-              </h3>
-              <p className="text-xs text-slate-500">
-                Auto-synced content
-              </p>
-            </div>
-            
-            <div className="card p-4">
-              <Zap className="w-6 h-6 text-primary-400 mx-auto mb-2" />
-              <h3 className="text-sm font-medium text-slate-200 mb-1">
-                Fast & Secure
-              </h3>
-              <p className="text-xs text-slate-500">
-                Read-only access
-              </p>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="mt-8 text-center">
-            <p className="text-xs text-slate-600">
-              Powered by{' '}
-              <a 
-                href="https://github.com/FlamingoLogic/Markdownviewerapp"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary-400 hover:text-primary-300"
-              >
-                Markdown Viewer App
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
-    )
+    return <AccessPortal siteConfig={siteConfig} onLogin={handleLogin} authState={authState} password={password} setPassword={setPassword} />
   }
 
   // Show main documentation interface
