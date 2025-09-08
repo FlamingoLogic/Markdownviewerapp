@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { 
-  Settings, 
-  Save, 
-  Eye, 
-  EyeOff, 
-  RefreshCw, 
+import {
+  Settings,
+  Save,
+  Eye,
+  EyeOff,
+  RefreshCw,
   Loader2,
   Shield,
   Github,
@@ -40,7 +40,7 @@ export default function AdminPage() {
     try {
       const response = await fetch('/api/admin/check')
       const data = await response.json()
-      
+
       if (data.isAuthenticated) {
         setIsAuthenticated(true)
         await loadConfig()
@@ -127,7 +127,7 @@ export default function AdminPage() {
 
       const response = await fetch('/api/admin/config', {
         method: 'PUT',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'x-admin-secret': adminPassword || 'TempAdmin2024!'
         },
@@ -204,7 +204,7 @@ export default function AdminPage() {
             backgroundSize: '50px 50px'
           }} />
         </div>
-        
+
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl animate-pulse" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
@@ -333,7 +333,7 @@ export default function AdminPage() {
                   Last sync: {formatRelativeTime(config.last_sync_at)}
                 </div>
               )}
-              
+
               <button
                 onClick={handleSave}
                 disabled={saving || !hasChanges}
@@ -408,7 +408,7 @@ export default function AdminPage() {
                     className="input-primary"
                     placeholder="https://example.com/your-logo.png"
                   />
-                  
+
                   {/* Logo Preview */}
                   <div className="flex items-center gap-4 p-3 bg-slate-800/50 rounded-lg border border-slate-700">
                     <div className="text-sm text-slate-300">Preview:</div>
@@ -527,8 +527,8 @@ export default function AdminPage() {
                 <input
                   type="text"
                   value={config.folders?.join(', ') || ''}
-                  onChange={(e) => setConfig({ 
-                    ...config, 
+                  onChange={(e) => setConfig({
+                    ...config,
                     folders: e.target.value.split(',').map(f => f.trim()).filter(f => f)
                   })}
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
@@ -567,7 +567,7 @@ export default function AdminPage() {
                     className="input-primary w-full text-base"
                     placeholder="http://16.176.163.234:7681/ or https://your-chat-service.com"
                   />
-                  
+
                   {/* Current Value Display */}
                   {config.iframe_url && (
                     <div className="p-3 bg-slate-800/50 rounded-lg border border-slate-700">
@@ -578,7 +578,7 @@ export default function AdminPage() {
                       <code className="text-sm text-green-400 break-all">{config.iframe_url}</code>
                     </div>
                   )}
-                  
+
                   {/* Help Text */}
                   <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
                     <h4 className="text-sm font-medium text-slate-300 mb-2">Configuration Notes:</h4>
@@ -591,7 +591,7 @@ export default function AdminPage() {
                       <li>• Example: ttyd terminal, customer support widgets, embedded chats</li>
                     </ul>
                   </div>
-                  
+
                   {/* HTTP Detection */}
                   {config.iframe_url?.startsWith('http://') && (
                     <div className="bg-orange-900/20 border border-orange-500/30 rounded-lg p-3">
@@ -600,7 +600,7 @@ export default function AdminPage() {
                         <span className="text-sm font-medium text-orange-300">HTTP URL Detected</span>
                       </div>
                       <p className="text-xs text-orange-200">
-                        This app is configured to allow HTTP iframes. If it doesn't work, 
+                        This app is configured to allow HTTP iframes. If it doesn't work,
                         your browser may show a security warning that you can override.
                       </p>
                     </div>
@@ -633,9 +633,9 @@ export default function AdminPage() {
                   <input
                     type="checkbox"
                     checked={config.chat_enabled ?? false}
-                    onChange={(e) => setConfig({ 
-                      ...config, 
-                      chat_enabled: e.target.checked 
+                    onChange={(e) => setConfig({
+                      ...config,
+                      chat_enabled: e.target.checked
                     })}
                     className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500"
                   />
@@ -655,8 +655,8 @@ export default function AdminPage() {
                     </label>
                     <select
                       value={config.llm_provider || ''}
-                      onChange={(e) => setConfig({ 
-                        ...config, 
+                      onChange={(e) => setConfig({
+                        ...config,
                         llm_provider: e.target.value as 'openai' | 'anthropic' | 'groq'
                       })}
                       className="input-primary w-full"
@@ -677,9 +677,9 @@ export default function AdminPage() {
                       <input
                         type={showPasswords ? 'text' : 'password'}
                         value={config.llm_api_key || ''}
-                        onChange={(e) => setConfig({ 
-                          ...config, 
-                          llm_api_key: e.target.value 
+                        onChange={(e) => setConfig({
+                          ...config,
+                          llm_api_key: e.target.value
                         })}
                         className="input-primary w-full pr-10"
                         placeholder="Enter your LLM API key"
@@ -702,7 +702,7 @@ export default function AdminPage() {
                         {config.llm_provider === 'anthropic' && '🧠 Anthropic Configuration'}
                         {config.llm_provider === 'groq' && '⚡ Groq Configuration'}
                       </h4>
-                      
+
                       <div className="text-xs text-slate-400 space-y-2">
                         {config.llm_provider === 'openai' && (
                           <>
@@ -711,7 +711,7 @@ export default function AdminPage() {
                             <p>• Excellent for documentation Q&A</p>
                           </>
                         )}
-                        
+
                         {config.llm_provider === 'anthropic' && (
                           <>
                             <p>• Get your API key from: <a href="https://console.anthropic.com/" target="_blank" className="text-blue-400 hover:underline">Anthropic Console</a></p>
@@ -719,7 +719,7 @@ export default function AdminPage() {
                             <p>• Great for detailed explanations</p>
                           </>
                         )}
-                        
+
                         {config.llm_provider === 'groq' && (
                           <>
                             <p>• Get your API key from: <a href="https://console.groq.com/keys" target="_blank" className="text-blue-400 hover:underline">Groq Console</a></p>
@@ -765,9 +765,9 @@ export default function AdminPage() {
                   <input
                     type="checkbox"
                     checked={config.auto_refresh_enabled ?? true}
-                    onChange={(e) => setConfig({ 
-                      ...config, 
-                      auto_refresh_enabled: e.target.checked 
+                    onChange={(e) => setConfig({
+                      ...config,
+                      auto_refresh_enabled: e.target.checked
                     })}
                     className="rounded border-slate-600 bg-slate-800 text-primary-500 focus:ring-primary-500"
                   />
@@ -781,9 +781,9 @@ export default function AdminPage() {
                 </label>
                 <select
                   value={config.refresh_interval_minutes || 15}
-                  onChange={(e) => setConfig({ 
-                    ...config, 
-                    refresh_interval_minutes: parseInt(e.target.value) 
+                  onChange={(e) => setConfig({
+                    ...config,
+                    refresh_interval_minutes: parseInt(e.target.value)
                   })}
                   className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   disabled={!config.auto_refresh_enabled}
@@ -831,9 +831,9 @@ export default function AdminPage() {
                   <input
                     type={showPasswords ? 'text' : 'password'}
                     value={config.site_password_hash || ''}
-                    onChange={(e) => setConfig({ 
-                      ...config, 
-                      site_password_hash: e.target.value 
+                    onChange={(e) => setConfig({
+                      ...config,
+                      site_password_hash: e.target.value
                     })}
                     className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="Leave empty to keep current password"
@@ -847,9 +847,9 @@ export default function AdminPage() {
                   <input
                     type={showPasswords ? 'text' : 'password'}
                     value={config.admin_password_hash || ''}
-                    onChange={(e) => setConfig({ 
-                      ...config, 
-                      admin_password_hash: e.target.value 
+                    onChange={(e) => setConfig({
+                      ...config,
+                      admin_password_hash: e.target.value
                     })}
                     className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-md text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     placeholder="Leave empty to keep current password"

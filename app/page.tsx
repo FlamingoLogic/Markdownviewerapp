@@ -10,6 +10,7 @@ import { AccessPortal } from '@/components/AccessPortal'
 import { siteConfigOperations, type SiteConfig } from '@/lib/supabase'
 import { FileTreeItem } from '@/lib/github'
 import { logError } from '@/lib/error-tracking'
+import { EnhancedChatPanel } from '@/components/EnhancedChatPanel'
 
 interface AuthState {
   isAuthenticated: boolean
@@ -207,7 +208,18 @@ export default function HomePage() {
         loading={loadingContent}
       />
       
-      <ChatPanel iframeUrl={siteConfig?.iframe_url} />
+        {siteConfig?.chat_enabled ? (
+          <EnhancedChatPanel 
+            currentFile={selectedFile ? {
+              name: selectedFile.name,
+              path: selectedFile.path,
+              content: markdownContent
+            } : undefined}
+            onConfigureAPI={() => window.location.href = '/admin'}
+          />
+        ) : (
+          <ChatPanel iframeUrl={siteConfig?.iframe_url} />
+        )}
     </ResizableLayout>
   )
 }
