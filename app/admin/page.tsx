@@ -341,7 +341,18 @@ export default function AdminPage() {
     )
   }
 
-  // Admin configuration panel
+  // Admin configuration panel - only show if authenticated
+  if (!isAuthenticated) {
+    // This should not happen if the logic above is correct, but just in case
+    return (
+      <div className="min-h-screen bg-dark-950 flex items-center justify-center">
+        <div className="text-center text-slate-500">
+          <p>Authentication required. Please refresh the page.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-dark-950">
       <div className="max-w-4xl mx-auto p-6">
@@ -366,7 +377,7 @@ export default function AdminPage() {
                   Last sync: {formatRelativeTime(config.last_sync_at)}
                 </div>
               )}
-
+              
               <button
                 onClick={handleSave}
                 disabled={saving || !hasChanges}
