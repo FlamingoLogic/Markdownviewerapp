@@ -90,6 +90,23 @@ export default function AdminPage() {
 
   const loadConfig = async () => {
     try {
+      // Check if we're in bypass mode
+      const urlParams = new URLSearchParams(window.location.search)
+      const isBypass = urlParams.get('bypass') === 'flamingo'
+      
+      if (isBypass) {
+        // Try to load from localStorage first in bypass mode
+        const savedConfig = localStorage.getItem('bypass_site_config')
+        if (savedConfig) {
+          console.log('🔧 BYPASS MODE: Loading from localStorage')
+          const configData = JSON.parse(savedConfig)
+          setConfig(configData)
+          setOriginalConfig(configData)
+          return
+        }
+      }
+      
+      // Normal config loading
       const siteConfig = await siteConfigOperations.getConfig()
       if (siteConfig) {
         const configData = {
@@ -153,14 +170,33 @@ export default function AdminPage() {
       // Check if we're in bypass mode
       const urlParams = new URLSearchParams(window.location.search)
       const isBypass = urlParams.get('bypass') === 'flamingo'
-      
+
       if (isBypass) {
-        // BYPASS MODE: Skip validation and simulate successful save
-        console.log('🔧 BYPASS MODE: Simulating successful save')
-        setSuccess('Configuration saved successfully! (Bypass mode - changes simulated)')
-        setOriginalConfig({ ...config })
-        setTimeout(() => setSuccess(null), 5000)
-        return
+        // BYPASS MODE: Use localStorage to persist settings
+        console.log('🔧 BYPASS MODE: Saving to localStorage')
+        
+        try {
+          // Save configuration to localStorage
+          const configToSave = {
+            ...config,
+            // Remove password fields
+            site_password_hash: undefined,
+            admin_password_hash: undefined
+          }
+          
+          localStorage.setItem('bypass_site_config', JSON.stringify(configToSave))
+          
+          setSuccess('Configuration saved successfully! (Bypass mode - using localStorage)')
+          setOriginalConfig({ ...config })
+          setTimeout(() => setSuccess(null), 5000)
+          
+          console.log('🔧 Config saved to localStorage:', configToSave)
+          return
+        } catch (error) {
+          console.error('Failed to save to localStorage:', error)
+          setError('Failed to save configuration in bypass mode')
+          return
+        }
       }
 
       // Normal save process for non-bypass mode
@@ -186,7 +222,7 @@ export default function AdminPage() {
 
       const response = await fetch('/api/admin/config', {
         method: 'PUT',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'x-admin-secret': adminPassword || 'TempAdmin2024!',
           'x-csrf-token': csrfToken
