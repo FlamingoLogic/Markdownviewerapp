@@ -31,16 +31,30 @@ export default function AdminPage() {
   const [showPasswords, setShowPasswords] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [csrfToken, setCsrfToken] = useState<string | null>(null)
 
   useEffect(() => {
     checkAdminAuth()
+    fetchCSRFToken()
   }, [])
+
+  const fetchCSRFToken = async () => {
+    try {
+      const response = await fetch('/api/csrf-token')
+      const data = await response.json()
+      if (data.token) {
+        setCsrfToken(data.token)
+      }
+    } catch (error) {
+      console.error('Failed to fetch CSRF token:', error)
+    }
+  }
 
   const checkAdminAuth = async () => {
     try {
       const response = await fetch('/api/admin/check')
       const data = await response.json()
-
+      
       if (data.isAuthenticated) {
         setIsAuthenticated(true)
         await loadConfig()
@@ -125,11 +139,21 @@ export default function AdminPage() {
       // Remove password fields from the update to preserve existing hashes
       const { site_password_hash, admin_password_hash, ...configWithoutPasswords } = config
 
+      // Ensure we have a CSRF token
+      if (!csrfToken) {
+        await fetchCSRFToken()
+        if (!csrfToken) {
+          setError('Security token not available. Please refresh the page.')
+          return
+        }
+      }
+
       const response = await fetch('/api/admin/config', {
         method: 'PUT',
-        headers: {
+        headers: { 
           'Content-Type': 'application/json',
-          'x-admin-secret': adminPassword || 'TempAdmin2024!'
+          'x-admin-secret': adminPassword || 'TempAdmin2024!',
+          'x-csrf-token': csrfToken
         },
         body: JSON.stringify(configWithoutPasswords)
       })
@@ -141,7 +165,14 @@ export default function AdminPage() {
         setOriginalConfig({ ...config })
         setTimeout(() => setSuccess(null), 3000)
       } else {
-        setError(data.message || 'Failed to save configuration')
+        // If CSRF token is invalid, try to get a new one
+        if (data.error === 'CSRF_TOKEN_INVALID') {
+          console.log('CSRF token expired, fetching new token...')
+          await fetchCSRFToken()
+          setError('Security token expired. Please try saving again.')
+        } else {
+          setError(data.message || 'Failed to save configuration')
+        }
       }
     } catch (error) {
       setError('Failed to save configuration')
