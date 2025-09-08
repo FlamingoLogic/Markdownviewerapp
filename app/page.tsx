@@ -47,7 +47,7 @@ export default function HomePage() {
     try {
       const response = await fetch('/api/auth/check')
       const data = await response.json()
-      
+
       setAuthState({
         isAuthenticated: data.isAuthenticated || false,
         isLoading: false,
@@ -64,6 +64,16 @@ export default function HomePage() {
 
   const loadSiteConfig = async () => {
     try {
+      // Check if there's a bypass config in localStorage
+      const bypassConfig = localStorage.getItem('bypass_site_config')
+      if (bypassConfig) {
+        console.log('🔧 Loading bypass config from localStorage')
+        const config = JSON.parse(bypassConfig)
+        setSiteConfig(config)
+        return
+      }
+      
+      // Normal config loading from database
       const config = await siteConfigOperations.getConfig()
       setSiteConfig(config)
     } catch (error) {
@@ -73,7 +83,7 @@ export default function HomePage() {
 
   const handleLogin = async (e: React.FormEvent, isAdmin: boolean = false) => {
     e.preventDefault()
-    
+
     if (!password.trim()) return
 
     setAuthState(prev => ({ ...prev, isLoading: true, error: undefined }))
@@ -94,7 +104,7 @@ export default function HomePage() {
           window.location.href = '/admin'
           return
         }
-        
+
         setAuthState({
           isAuthenticated: true,
           isLoading: false,
@@ -133,7 +143,7 @@ export default function HomePage() {
       if (response.ok) {
         setFiles(data.files || [])
       } else {
-                logError(new Error('Failed to load files'), {
+        logError(new Error('Failed to load files'), {
           additionalData: { context: 'loadFiles', error: data.message }
         })
       }
@@ -162,7 +172,7 @@ export default function HomePage() {
       }
     } catch (error) {
       setMarkdownContent('')
-      logError(error as Error, { 
+      logError(error as Error, {
         additionalData: { context: 'loadFileContent', file: file.path }
       })
     } finally {
@@ -201,25 +211,25 @@ export default function HomePage() {
         selectedFile={selectedFile?.path}
         lastSync={siteConfig?.last_sync_at}
       />
-      
+
       <MarkdownViewer
         file={selectedFile}
         content={markdownContent}
         loading={loadingContent}
       />
-      
-        {siteConfig?.chat_enabled ? (
-          <EnhancedChatPanel 
-            currentFile={selectedFile ? {
-              name: selectedFile.name,
-              path: selectedFile.path,
-              content: markdownContent
-            } : undefined}
-            onConfigureAPI={() => window.location.href = '/admin'}
-          />
-        ) : (
-          <ChatPanel iframeUrl={siteConfig?.iframe_url} />
-        )}
+
+      {siteConfig?.chat_enabled ? (
+        <EnhancedChatPanel
+          currentFile={selectedFile ? {
+            name: selectedFile.name,
+            path: selectedFile.path,
+            content: markdownContent
+          } : undefined}
+          onConfigureAPI={() => window.location.href = '/admin'}
+        />
+      ) : (
+        <ChatPanel iframeUrl={siteConfig?.iframe_url} />
+      )}
     </ResizableLayout>
   )
 }
