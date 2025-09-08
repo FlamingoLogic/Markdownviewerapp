@@ -29,6 +29,7 @@ export default function HomePage() {
   const [selectedFile, setSelectedFile] = useState<FileTreeItem | undefined>(undefined)
   const [markdownContent, setMarkdownContent] = useState('')
   const [loadingContent, setLoadingContent] = useState(false)
+  const [configLoaded, setConfigLoaded] = useState(false)
 
   // Check authentication and load config on mount
   useEffect(() => {
@@ -63,21 +64,40 @@ export default function HomePage() {
   }
 
   const loadSiteConfig = async () => {
+    // Prevent multiple config loads
+    if (configLoaded) {
+      console.log('⚠️ Config already loaded, skipping')
+      return
+    }
+
     try {
       // Check if there's a bypass config in localStorage
       const bypassConfig = localStorage.getItem('bypass_site_config')
       if (bypassConfig) {
-        console.log('🔧 Loading bypass config from localStorage')
+        console.log('🔧 BYPASS MODE: Using localStorage config (priority over database)')
         const config = JSON.parse(bypassConfig)
         setSiteConfig(config)
+        setConfigLoaded(true)
+        // Don't load from database when bypass config exists
         return
       }
       
-      // Normal config loading from database
+      // Normal config loading from database (only when no bypass config)
+      console.log('📊 Loading config from database')
       const config = await siteConfigOperations.getConfig()
       setSiteConfig(config)
+      setConfigLoaded(true)
     } catch (error) {
       logError(error as Error, { additionalData: { context: 'loadSiteConfig' } })
+      
+      // If database fails, check localStorage as fallback
+      const bypassConfig = localStorage.getItem('bypass_site_config')
+      if (bypassConfig) {
+        console.log('🔧 Database failed, falling back to localStorage config')
+        const config = JSON.parse(bypassConfig)
+        setSiteConfig(config)
+        setConfigLoaded(true)
+      }
     }
   }
 
