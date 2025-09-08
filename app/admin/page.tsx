@@ -42,8 +42,10 @@ export default function AdminPage() {
     try {
       const response = await fetch('/api/csrf-token')
       const data = await response.json()
-      if (data.token) {
-        setCsrfToken(data.token)
+      if (data.csrfToken) {
+        setCsrfToken(data.csrfToken)
+      } else {
+        console.error('CSRF token not found in response:', data)
       }
     } catch (error) {
       console.error('Failed to fetch CSRF token:', error)
@@ -54,7 +56,7 @@ export default function AdminPage() {
     try {
       const response = await fetch('/api/admin/check')
       const data = await response.json()
-      
+
       if (data.isAuthenticated) {
         setIsAuthenticated(true)
         await loadConfig()
@@ -150,7 +152,7 @@ export default function AdminPage() {
 
       const response = await fetch('/api/admin/config', {
         method: 'PUT',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'x-admin-secret': adminPassword || 'TempAdmin2024!',
           'x-csrf-token': csrfToken
