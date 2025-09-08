@@ -24,6 +24,9 @@ import { logError } from '@/lib/error-tracking'
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  
+  // Debug logging
+  console.log('AdminPage render - isAuthenticated:', isAuthenticated, 'isLoading:', isLoading)
   const [adminPassword, setAdminPassword] = useState('')
   const [config, setConfig] = useState<Partial<SiteConfig>>({})
   const [originalConfig, setOriginalConfig] = useState<Partial<SiteConfig>>({})
@@ -56,13 +59,17 @@ export default function AdminPage() {
     try {
       const response = await fetch('/api/admin/check')
       const data = await response.json()
-
+      
       if (data.isAuthenticated) {
         setIsAuthenticated(true)
         await loadConfig()
+      } else {
+        // Force show login form if not authenticated
+        console.log('Not authenticated, should show login form')
       }
     } catch (error) {
       console.error('Admin auth check failed:', error)
+      // On error, also show login form
     } finally {
       setIsLoading(false)
     }
@@ -377,7 +384,7 @@ export default function AdminPage() {
                   Last sync: {formatRelativeTime(config.last_sync_at)}
                 </div>
               )}
-              
+
               <button
                 onClick={handleSave}
                 disabled={saving || !hasChanges}
