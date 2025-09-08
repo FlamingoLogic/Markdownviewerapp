@@ -46,20 +46,25 @@ export const siteConfigOperations = {
       // If Supabase is not configured (using placeholder URL), return mock config
       if (supabaseUrl === 'https://placeholder.supabase.co') {
         console.log('Using placeholder Supabase URL, returning mock config')
+        
+        // Check for environment variable override for AI chat testing
+        const testMode = process.env.NEXT_PUBLIC_AI_CHAT_TEST === 'true'
+        const testApiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY
+        
         return {
           id: 'demo-config',
           title: 'Demo Documentation Site',
           slogan: 'Your documentation, beautifully organized',
           help_text: 'Welcome to your documentation site! Configure this in the admin panel.',
-          github_repo: 'your-username/your-repo',
+          github_repo: testMode ? 'https://github.com/FlamingoLogic/ObsidianSync' : 'your-username/your-repo',
           branch: 'main',
-          folders: ['docs', 'guides'],
+          folders: testMode ? ['02AbilityERP'] : ['docs', 'guides'],
           iframe_url: 'https://example.com/chat',
-          // LLM Chat Configuration (demo defaults)
-          llm_provider: undefined,
-          llm_api_key: undefined,
-          llm_model: undefined,
-          chat_enabled: false,
+          // LLM Chat Configuration - use env vars for testing
+          llm_provider: testMode && testApiKey ? 'openai' as const : undefined,
+          llm_api_key: testMode ? testApiKey : undefined,
+          llm_model: testMode ? 'gpt-3.5-turbo' : undefined,
+          chat_enabled: testMode && !!testApiKey,
           auto_refresh_enabled: true,
           refresh_interval_minutes: 15,
           last_sync_at: new Date().toISOString(),
@@ -79,16 +84,25 @@ export const siteConfigOperations = {
         console.error('Error fetching site config:', error)
         console.log('Supabase connection failed, falling back to demo config')
 
+        // Check for environment variable override for AI chat testing
+        const testMode = process.env.NEXT_PUBLIC_AI_CHAT_TEST === 'true'
+        const testApiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY
+
         // Fallback to demo config if Supabase connection fails
         return {
           id: 'fallback-config',
           title: 'Documentation Site',
           slogan: 'Your documentation, beautifully organized',
           help_text: 'Welcome to your documentation site! Set up Supabase to customize this.',
-          github_repo: 'your-username/your-repo',
+          github_repo: testMode ? 'https://github.com/FlamingoLogic/ObsidianSync' : 'your-username/your-repo',
           branch: 'main',
-          folders: ['docs', 'guides'],
+          folders: testMode ? ['02AbilityERP'] : ['docs', 'guides'],
           iframe_url: 'https://example.com/chat',
+          // LLM Chat Configuration - use env vars for testing
+          llm_provider: testMode && testApiKey ? 'openai' as const : undefined,
+          llm_api_key: testMode ? testApiKey : undefined,
+          llm_model: testMode ? 'gpt-3.5-turbo' : undefined,
+          chat_enabled: testMode && !!testApiKey,
           auto_refresh_enabled: true,
           refresh_interval_minutes: 15,
           last_sync_at: new Date().toISOString(),

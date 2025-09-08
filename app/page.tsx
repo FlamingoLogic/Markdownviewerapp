@@ -71,33 +71,17 @@ export default function HomePage() {
     }
 
     try {
-      // Check if there's a bypass config in localStorage
-      const bypassConfig = localStorage.getItem('bypass_site_config')
-      if (bypassConfig) {
-        console.log('🔧 BYPASS MODE: Using localStorage config (priority over database)')
-        const config = JSON.parse(bypassConfig)
-        setSiteConfig(config)
-        setConfigLoaded(true)
-        // Don't load from database when bypass config exists
-        return
-      }
-      
-      // Normal config loading from database (only when no bypass config)
-      console.log('📊 Loading config from database')
+      console.log('📊 Loading site configuration...')
       const config = await siteConfigOperations.getConfig()
       setSiteConfig(config)
       setConfigLoaded(true)
+      
+      // Log if we're in test mode
+      if (config?.chat_enabled) {
+        console.log('🤖 AI Chat is enabled via configuration')
+      }
     } catch (error) {
       logError(error as Error, { additionalData: { context: 'loadSiteConfig' } })
-      
-      // If database fails, check localStorage as fallback
-      const bypassConfig = localStorage.getItem('bypass_site_config')
-      if (bypassConfig) {
-        console.log('🔧 Database failed, falling back to localStorage config')
-        const config = JSON.parse(bypassConfig)
-        setSiteConfig(config)
-        setConfigLoaded(true)
-      }
     }
   }
 
