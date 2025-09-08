@@ -12,7 +12,9 @@ import {
   Github,
   MessageCircle,
   Palette,
-  Lock
+  Lock,
+  Bot,
+  Zap
 } from 'lucide-react'
 import { siteConfigOperations, type SiteConfig } from '@/lib/supabase'
 import { InputValidator } from '@/lib/auth'
@@ -605,6 +607,146 @@ export default function AdminPage() {
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* AI Chat Configuration */}
+          <div className="card-elevated p-6 border-l-4 border-blue-500">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <Bot className="w-6 h-6 text-blue-400" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-slate-100">
+                  AI Chat Configuration
+                </h2>
+                <p className="text-sm text-slate-400">
+                  Configure LLM API for native AI-powered documentation chat
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-6">
+              {/* Enable AI Chat Toggle */}
+              <div>
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={config.chat_enabled ?? false}
+                    onChange={(e) => setConfig({ 
+                      ...config, 
+                      chat_enabled: e.target.checked 
+                    })}
+                    className="rounded border-slate-600 bg-slate-800 text-blue-500 focus:ring-blue-500"
+                  />
+                  <div>
+                    <span className="text-sm font-medium text-slate-300">Enable AI Chat</span>
+                    <p className="text-xs text-slate-500">Replace iframe chat with native AI-powered assistance</p>
+                  </div>
+                </label>
+              </div>
+
+              {config.chat_enabled && (
+                <>
+                  {/* LLM Provider Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-3">
+                      LLM Provider *
+                    </label>
+                    <select
+                      value={config.llm_provider || ''}
+                      onChange={(e) => setConfig({ 
+                        ...config, 
+                        llm_provider: e.target.value as 'openai' | 'anthropic' | 'groq'
+                      })}
+                      className="input-primary w-full"
+                    >
+                      <option value="">Select a provider</option>
+                      <option value="openai">OpenAI (GPT-3.5/4)</option>
+                      <option value="anthropic">Anthropic (Claude)</option>
+                      <option value="groq">Groq (Fast Inference)</option>
+                    </select>
+                  </div>
+
+                  {/* API Key */}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-3">
+                      API Key *
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPasswords ? 'text' : 'password'}
+                        value={config.llm_api_key || ''}
+                        onChange={(e) => setConfig({ 
+                          ...config, 
+                          llm_api_key: e.target.value 
+                        })}
+                        className="input-primary w-full pr-10"
+                        placeholder="Enter your LLM API key"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPasswords(!showPasswords)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-300"
+                      >
+                        {showPasswords ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Provider-specific information */}
+                  {config.llm_provider && (
+                    <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700">
+                      <h4 className="text-sm font-medium text-slate-300 mb-3">
+                        {config.llm_provider === 'openai' && '🤖 OpenAI Configuration'}
+                        {config.llm_provider === 'anthropic' && '🧠 Anthropic Configuration'}
+                        {config.llm_provider === 'groq' && '⚡ Groq Configuration'}
+                      </h4>
+                      
+                      <div className="text-xs text-slate-400 space-y-2">
+                        {config.llm_provider === 'openai' && (
+                          <>
+                            <p>• Get your API key from: <a href="https://platform.openai.com/api-keys" target="_blank" className="text-blue-400 hover:underline">OpenAI Platform</a></p>
+                            <p>• Uses GPT-3.5-turbo model (cost-effective)</p>
+                            <p>• Excellent for documentation Q&A</p>
+                          </>
+                        )}
+                        
+                        {config.llm_provider === 'anthropic' && (
+                          <>
+                            <p>• Get your API key from: <a href="https://console.anthropic.com/" target="_blank" className="text-blue-400 hover:underline">Anthropic Console</a></p>
+                            <p>• Uses Claude-3 Sonnet model</p>
+                            <p>• Great for detailed explanations</p>
+                          </>
+                        )}
+                        
+                        {config.llm_provider === 'groq' && (
+                          <>
+                            <p>• Get your API key from: <a href="https://console.groq.com/keys" target="_blank" className="text-blue-400 hover:underline">Groq Console</a></p>
+                            <p>• Uses Mixtral-8x7B model</p>
+                            <p>• Ultra-fast inference speeds</p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* AI Chat Features */}
+                  <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-lg p-4 border border-blue-500/30">
+                    <h4 className="text-sm font-medium text-blue-300 mb-2 flex items-center gap-2">
+                      <Zap className="w-4 h-4" />
+                      AI Chat Features
+                    </h4>
+                    <ul className="text-xs text-slate-400 space-y-1">
+                      <li>• 🔍 Context-aware responses using current file content</li>
+                      <li>• 📚 Knowledge of your entire documentation structure</li>
+                      <li>• 💬 Conversational interface with message history</li>
+                      <li>• 🚀 Real-time responses as you browse files</li>
+                      <li>• 🔒 Secure API key storage (encrypted)</li>
+                    </ul>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

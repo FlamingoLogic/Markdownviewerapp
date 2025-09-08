@@ -24,6 +24,11 @@ export interface SiteConfig {
   branch: string
   folders: string[]
   iframe_url?: string
+  // LLM Chat Configuration
+  llm_provider?: 'openai' | 'anthropic' | 'groq'
+  llm_api_key?: string
+  llm_model?: string
+  chat_enabled?: boolean
   auto_refresh_enabled: boolean
   refresh_interval_minutes: number
   last_sync_at?: string
@@ -50,6 +55,11 @@ export const siteConfigOperations = {
           branch: 'main',
           folders: ['docs', 'guides'],
           iframe_url: 'https://example.com/chat',
+          // LLM Chat Configuration (demo defaults)
+          llm_provider: undefined,
+          llm_api_key: undefined,
+          llm_model: undefined,
+          chat_enabled: false,
           auto_refresh_enabled: true,
           refresh_interval_minutes: 15,
           last_sync_at: new Date().toISOString(),
