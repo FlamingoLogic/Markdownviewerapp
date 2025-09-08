@@ -44,11 +44,12 @@ export default function AdminPage() {
       console.log('🔧 BYPASS ACTIVATED: Forcing admin authentication')
       setIsAuthenticated(true)
       setIsLoading(false)
+      setError(null) // Clear any auth errors
       loadConfig()
       fetchCSRFToken()
       return
     }
-    
+
     checkAdminAuth()
     fetchCSRFToken()
   }, [])
