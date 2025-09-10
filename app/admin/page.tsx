@@ -93,7 +93,7 @@ export default function AdminPage() {
       // Check if we're in bypass mode
       const urlParams = new URLSearchParams(window.location.search)
       const isBypass = urlParams.get('bypass') === 'flamingo'
-      
+
       if (isBypass) {
         // Try to load from localStorage first in bypass mode
         const savedConfig = localStorage.getItem('bypass_site_config')
@@ -105,7 +105,7 @@ export default function AdminPage() {
           return
         }
       }
-      
+
       // Normal config loading
       const siteConfig = await siteConfigOperations.getConfig()
       if (siteConfig) {
@@ -174,7 +174,7 @@ export default function AdminPage() {
       if (isBypass) {
         // BYPASS MODE: Use localStorage to persist settings
         console.log('🔧 BYPASS MODE: Saving to localStorage')
-        
+
         try {
           // Save configuration to localStorage
           const configToSave = {
@@ -183,13 +183,13 @@ export default function AdminPage() {
             site_password_hash: undefined,
             admin_password_hash: undefined
           }
-          
+
           localStorage.setItem('bypass_site_config', JSON.stringify(configToSave))
-          
+
           setSuccess('Configuration saved successfully! (Bypass mode - using localStorage)')
           setOriginalConfig({ ...config })
           setTimeout(() => setSuccess(null), 5000)
-          
+
           console.log('🔧 Config saved to localStorage:', configToSave)
           return
         } catch (error) {

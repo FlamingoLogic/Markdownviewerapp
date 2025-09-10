@@ -1,10 +1,10 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import { 
-  MessageCircle, 
-  Send, 
-  Bot, 
+import {
+  MessageCircle,
+  Send,
+  Bot,
   User,
   Loader2,
   Settings,
@@ -29,10 +29,10 @@ interface EnhancedChatPanelProps {
   onConfigureAPI?: () => void
 }
 
-export function EnhancedChatPanel({ 
-  currentFile, 
-  className = '', 
-  onConfigureAPI 
+export function EnhancedChatPanel({
+  currentFile,
+  className = '',
+  onConfigureAPI
 }: EnhancedChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
@@ -110,7 +110,7 @@ export function EnhancedChatPanel({
       const data = await response.json()
 
       // Replace loading message with actual response
-      setMessages(prev => prev.map(msg => 
+      setMessages(prev => prev.map(msg =>
         msg.isLoading ? {
           ...msg,
           content: data.response,
@@ -121,7 +121,7 @@ export function EnhancedChatPanel({
     } catch (error) {
       console.error('Chat error:', error)
       setError(error instanceof Error ? error.message : 'Failed to send message')
-      
+
       // Remove loading message on error
       setMessages(prev => prev.filter(msg => !msg.isLoading))
     } finally {
@@ -169,7 +169,7 @@ export function EnhancedChatPanel({
             <p className="text-sm mb-4">
               Configure an LLM API key in the admin panel to enable AI-powered chat that can answer questions about your documentation.
             </p>
-            
+
             {onConfigureAPI && (
               <button
                 onClick={onConfigureAPI}
@@ -194,7 +194,7 @@ export function EnhancedChatPanel({
             <Bot className="w-4 h-4 text-primary-400" />
             AI Chat
           </h3>
-          
+
           <div className="flex items-center gap-1">
             <button
               onClick={clearChat}
@@ -203,7 +203,7 @@ export function EnhancedChatPanel({
             >
               <RefreshCw className="w-3 h-3" />
             </button>
-            
+
             {onConfigureAPI && (
               <button
                 onClick={onConfigureAPI}
@@ -215,7 +215,7 @@ export function EnhancedChatPanel({
             )}
           </div>
         </div>
-        
+
         {/* Current file indicator */}
         {currentFile && (
           <div className="mt-2 flex items-center gap-2 text-xs text-slate-400">
@@ -252,7 +252,7 @@ export function EnhancedChatPanel({
                 <Bot className="w-4 h-4 text-white" />
               </div>
             )}
-            
+
             <div
               className={cn(
                 'rounded-lg px-3 py-2 max-w-[80%] break-words',
@@ -271,7 +271,7 @@ export function EnhancedChatPanel({
                   {message.content}
                 </div>
               )}
-              
+
               <div className={cn(
                 'text-xs mt-1 opacity-70',
                 message.role === 'user' ? 'text-primary-100' : 'text-slate-400'
@@ -287,7 +287,7 @@ export function EnhancedChatPanel({
             )}
           </div>
         ))}
-        
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -326,7 +326,7 @@ export function EnhancedChatPanel({
             )}
           </button>
         </div>
-        
+
         <div className="flex items-center justify-between mt-2">
           <div className="text-xs text-slate-500">
             Press Enter to send, Shift+Enter for new line

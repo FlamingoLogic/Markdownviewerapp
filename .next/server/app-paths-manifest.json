@@ -1,1 +1,4 @@
-{}
+{
+  "/api/debug/github-connection-test/route": "app/api/debug/github-connection-test/route.js",
+  "/api/health/route": "app/api/health/route.js"
+}

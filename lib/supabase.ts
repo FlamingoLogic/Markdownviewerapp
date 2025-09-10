@@ -46,19 +46,19 @@ export const siteConfigOperations = {
       // If Supabase is not configured (using placeholder URL), return mock config
       if (supabaseUrl === 'https://placeholder.supabase.co') {
         console.log('Using placeholder Supabase URL, returning mock config')
-        
+
         // Check for environment variable override for AI chat testing
         const testMode = process.env.NEXT_PUBLIC_AI_CHAT_TEST === 'true'
         const testApiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY
-        
+
         return {
           id: 'demo-config',
-          title: 'Demo Documentation Site',
-          slogan: 'Your documentation, beautifully organized',
-          help_text: 'Welcome to your documentation site! Configure this in the admin panel.',
-          github_repo: testMode ? 'https://github.com/FlamingoLogic/ObsidianSync' : 'your-username/your-repo',
+          title: 'ObsidianSync Documentation',
+          slogan: 'AbilityERP Documentation Hub',
+          help_text: 'Welcome to the AbilityERP documentation! Use password "flamingo" to access.',
+          github_repo: 'https://github.com/FlamingoLogic/ObsidianSync',
           branch: 'main',
-          folders: testMode ? ['02AbilityERP'] : ['docs', 'guides'],
+          folders: ['02 AbilityERP'],
           iframe_url: 'https://example.com/chat',
           // LLM Chat Configuration - use env vars for testing
           llm_provider: testMode && testApiKey ? 'openai' as const : undefined,
@@ -124,9 +124,9 @@ export const siteConfigOperations = {
         title: 'Documentation Site',
         slogan: 'Your documentation, beautifully organized',
         help_text: 'Welcome to your documentation site! Check your Supabase configuration.',
-        github_repo: 'your-username/your-repo',
+          github_repo: 'https://github.com/FlamingoLogic/ObsidianSync',
         branch: 'main',
-        folders: ['docs', 'guides'],
+        folders: ['02 AbilityERP'],
         iframe_url: 'https://example.com/chat',
         auto_refresh_enabled: true,
         refresh_interval_minutes: 15,

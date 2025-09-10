@@ -75,7 +75,7 @@ export default function HomePage() {
       const config = await siteConfigOperations.getConfig()
       setSiteConfig(config)
       setConfigLoaded(true)
-      
+
       // Log if we're in test mode
       if (config?.chat_enabled) {
         console.log('🤖 AI Chat is enabled via configuration')

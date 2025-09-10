@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     const cookieStore = cookies()
     const sessionCookie = cookieStore.get('site_session')
     const session = CookieService.parseSessionFromCookie(sessionCookie?.value)
-    
+
     if (!SessionService.isValidSession(session)) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
     // Prepare context from GitHub content
     let contextInfo = ''
-    
+
     if (currentFile?.content) {
       contextInfo += `\n\nCurrent file: ${currentFile.name} (${currentFile.path})\n${currentFile.content}`
     }
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       try {
         const githubService = new GitHubService(siteConfig.github_repo, siteConfig.branch)
         const files = await githubService.getMarkdownFiles(siteConfig.folders)
-        
+
         const fileList = extractFileList(files)
         contextInfo += `\n\nAvailable documentation files:\n${fileList.slice(0, 50).join('\n')}`
       } catch (error) {
@@ -98,8 +98,8 @@ Please respond to the user's question:`
 
   } catch (error) {
     console.error('Chat message error:', error)
-    logError(error as Error, { 
-      additionalData: { context: 'chat-message' } 
+    logError(error as Error, {
+      additionalData: { context: 'chat-message' }
     })
 
     return NextResponse.json(
@@ -112,7 +112,7 @@ Please respond to the user's question:`
 // Helper function to extract file list from GitHub file tree
 function extractFileList(files: any[]): string[] {
   const result: string[] = []
-  
+
   function traverse(items: any[], prefix = '') {
     for (const item of items) {
       if (item.type === 'file') {
@@ -123,7 +123,7 @@ function extractFileList(files: any[]): string[] {
       }
     }
   }
-  
+
   traverse(files)
   return result
 }
@@ -135,17 +135,17 @@ async function callLLMAPI(
   systemPrompt: string,
   userMessage: string
 ): Promise<string> {
-  
+
   switch (provider.toLowerCase()) {
     case 'openai':
       return await callOpenAI(apiKey, systemPrompt, userMessage)
-    
+
     case 'anthropic':
       return await callAnthropic(apiKey, systemPrompt, userMessage)
-    
+
     case 'groq':
       return await callGroq(apiKey, systemPrompt, userMessage)
-    
+
     default:
       throw new Error(`Unsupported LLM provider: ${provider}`)
   }

@@ -12,7 +12,7 @@ This document contains the default passwords for accessing different parts of th
 
 ### Site Access (Main Application)
 - **Username**: Not required
-- **Password**: `flamingo`
+- **Password**: `flamingoimage.png
 - **Purpose**: Access to view markdown files and browse documentation
 - **Usage**: Enter this password on the main login screen to access the file viewer
 

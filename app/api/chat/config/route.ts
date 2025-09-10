@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const cookieStore = cookies()
     const sessionCookie = cookieStore.get('site_session')
     const session = CookieService.parseSessionFromCookie(sessionCookie?.value)
-    
+
     if (!SessionService.isValidSession(session)) {
       return NextResponse.json(
         { error: 'Unauthorized' },
@@ -19,15 +19,15 @@ export async function GET(request: NextRequest) {
 
     // Get site configuration to check if LLM API is configured
     const siteConfig = await siteConfigOperations.getConfig()
-    
+
     const configured = !!(
-      siteConfig?.llm_api_key && 
+      siteConfig?.llm_api_key &&
       siteConfig?.llm_provider &&
       siteConfig?.chat_enabled
     )
 
     return NextResponse.json(
-      { 
+      {
         configured,
         provider: configured ? siteConfig.llm_provider : null,
         chatEnabled: siteConfig?.chat_enabled ?? false
