@@ -73,10 +73,10 @@ export async function GET(request: NextRequest) {
     })
 
     let apiTests = {
-      rateLimit: { success: false, error: null, data: null },
-      repoAccess: { success: false, error: null, data: null },
-      repoContents: { success: false, error: null, data: null },
-      folderAccess: { success: false, error: null, data: null }
+      rateLimit: { success: false, error: null, data: null as any },
+      repoAccess: { success: false, error: null, data: null as any },
+      repoContents: { success: false, error: null, data: null as any },
+      folderAccess: { success: false, error: null, data: null as any }
     }
 
     // Test rate limit (checks if API is accessible)
@@ -245,7 +245,7 @@ export async function GET(request: NextRequest) {
 
     // Test 5: Test GitHubService class
     console.log('\n=== GITHUB SERVICE TEST ===')
-    let serviceTest = { success: false, error: null, data: null }
+    let serviceTest = { success: false, error: null as string | null, data: null as any }
 
     try {
       const githubService = new GitHubService(repoUrl, siteConfig.branch || 'main')

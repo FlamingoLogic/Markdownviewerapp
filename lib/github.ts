@@ -1,9 +1,29 @@
 import { Octokit } from '@octokit/rest'
 
-// Initialize GitHub client
+// Initialize GitHub client with better error handling
+const githubToken = process.env.GITHUB_TOKEN || process.env.NEXT_PUBLIC_GITHUB_TOKEN
 const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN, // Optional for public repos
+  auth: githubToken, // Optional for public repos
+  throttle: {
+    onRateLimit: (retryAfter: number, options: any) => {
+      console.warn(`GitHub API rate limit exceeded. Retrying after ${retryAfter} seconds.`)
+      return options.request.retryCount < 2 // Retry up to 2 times
+    },
+    onAbuseLimit: (retryAfter: number, options: any) => {
+      console.error(`GitHub API abuse detection triggered. Retrying after ${retryAfter} seconds.`)
+      return options.request.retryCount < 1 // Retry once for abuse limit
+    },
+  },
 })
+
+// Log GitHub token status on server startup
+if (typeof window === 'undefined') {
+  if (!githubToken) {
+    console.warn('⚠️  GITHUB_TOKEN not configured - only public repositories will be accessible')
+  } else {
+    console.log('✅ GitHub token configured - private repositories accessible')
+  }
+}
 
 export interface GitHubFile {
   name: string

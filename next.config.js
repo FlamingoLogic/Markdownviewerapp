@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Configure output for Amplify deployment
+  output: 'standalone',
+  trailingSlash: false,
+  
+  // Optimize for production builds
+  compress: true,
+  poweredByHeader: false,
+  
   async headers() {
     return [
       {
@@ -17,6 +25,16 @@ const nextConfig = {
         ],
       },
     ]
+  },
+  
+  // Environment variable configuration for Amplify
+  env: {
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
+  },
+  
+  // Experimental features for better Amplify compatibility
+  experimental: {
+    serverComponentsExternalPackages: ['@supabase/supabase-js'],
   },
 }
 

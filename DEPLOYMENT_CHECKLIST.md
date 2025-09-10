@@ -1,103 +1,196 @@
-# 🚀 Deployment Checklist for ObsidianSync Integration
+# 🚀 Deployment Checklist for AWS Amplify
 
-## ✅ What's Already Done:
-- [x] Repository configured: `https://github.com/FlamingoLogic/ObsidianSync`
-- [x] Folder configured: `02 AbilityERP`
-- [x] Branch configured: `main`
-- [x] Debug endpoints created for testing
-- [x] Default configuration updated
+## ⚠️ **CRITICAL: Read Before Every Deploy**
 
-## 🔧 What You Need to Do in AWS Amplify:
+This checklist prevents the morning issues we experienced. Follow it religiously!
 
-### 1. **Set Environment Variables** (Critical!)
-Go to AWS Amplify Console → Your App → App Settings → Environment Variables
+---
 
-**Add these variables:**
-```
-GITHUB_TOKEN=your_github_personal_access_token
-```
+## 🔧 **Pre-Deployment Checklist**
 
-**Optional (for full Supabase setup):**
-```
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_key
+### ✅ **Environment Variables (Amplify Console)**
+Verify these are set in AWS Amplify Console → App Settings → Environment Variables:
+
+```bash
+# Required Variables
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# Optional Variables
+GITHUB_TOKEN=your-github-token (for private repos)
+NEXT_PUBLIC_GITHUB_TOKEN=your-github-token (Amplify fallback)
 ```
 
-### 2. **Create GitHub Token**
-1. Visit: https://github.com/settings/tokens
-2. "Generate new token (classic)"
-3. Select scopes:
-   - `public_repo` (if ObsidianSync is public)
-   - `repo` (if ObsidianSync is private)
-4. Copy token (starts with `ghp_`)
-5. Add as `GITHUB_TOKEN` in Amplify
+### ✅ **Build Configuration**
+- [ ] `amplify.yml` uses correct artifacts configuration
+- [ ] `next.config.js` has `output: 'standalone'` for Amplify
+- [ ] No duplicate security headers between files
+- [ ] Build cache paths are correct
 
-### 3. **Push to GitHub** (Triggers Amplify Build)
+### ✅ **Code Quality**
+- [ ] Run `npm run lint` - no errors
+- [ ] Run `npm run type-check` - no TypeScript errors  
+- [ ] Run `npm run build` locally - successful build
+- [ ] Test authentication flow locally
+- [ ] Test GitHub API connectivity
+
+---
+
+## 🏗️ **Deployment Process**
+
+### 1. **Local Testing**
+```bash
+# Test the build locally first
+npm run build
+npm run start
+
+# Test critical paths:
+# - Authentication (/admin login)
+# - File loading (GitHub API)
+# - Error handling (invalid repos)
+```
+
+### 2. **Git Push**
 ```bash
 git add .
-git commit -m "Configure ObsidianSync repository integration"
+git commit -m "Deploy: [describe changes]"
 git push origin main
 ```
 
-### 4. **Test After Deployment**
-Once Amplify finishes building, test these URLs:
+### 3. **Monitor Amplify Build**
+- [ ] Watch build logs in Amplify Console
+- [ ] Check for environment variable warnings
+- [ ] Verify build artifacts are generated
+- [ ] Test deployment URL after completion
 
-**Main site:** `https://your-amplify-url.com`
-- Login with: `flamingo`
-- Should show files from `02 AbilityERP` folder
+---
 
-**Debug endpoints:**
-- `https://your-amplify-url.com/api/debug/test-obsidian-sync`
-- `https://your-amplify-url.com/api/debug/github-connection-test`
+## 🚨 **Common Issues & Solutions**
 
-**Expected results:**
+### **Issue: Build Fails on Amplify**
+**Symptoms:** Build stops during npm run build
+**Solutions:**
+- Check Node.js version (should be 18+)
+- Verify all dependencies in package.json
+- Check for TypeScript errors
+- Review amplify.yml configuration
+
+### **Issue: Environment Variables Not Working**
+**Symptoms:** "placeholder.supabase.co" in logs, authentication fails
+**Solutions:**
+- Use `NEXT_PUBLIC_` prefix for server-side variables on Amplify
+- Verify variables are set in Amplify Console (not .env.local)
+- Restart deployment after adding variables
+
+### **Issue: GitHub API Rate Limits**
+**Symptoms:** "rate limit exceeded" errors, file loading fails
+**Solutions:**
+- Add GITHUB_TOKEN environment variable
+- Implement proper retry logic (already in code)
+- Monitor GitHub API usage
+
+### **Issue: Security Headers Conflict**
+**Symptoms:** Console warnings about duplicate headers
+**Solutions:**
+- Remove duplicate X-Frame-Options from amplify.yml
+- Keep CSP headers in next.config.js only
+- Test with browser dev tools
+
+---
+
+## 🔍 **Post-Deployment Testing**
+
+### **Critical Path Testing:**
+1. [ ] **Landing Page** - loads without errors
+2. [ ] **Authentication** - site password works
+3. [ ] **Admin Panel** - admin password works  
+4. [ ] **File Explorer** - GitHub files load
+5. [ ] **Markdown Viewer** - content displays correctly
+6. [ ] **Error Handling** - graceful failure modes
+
+### **Performance Testing:**
+- [ ] Page load times < 3 seconds
+- [ ] GitHub API responses < 5 seconds
+- [ ] No console errors in browser
+- [ ] Mobile responsiveness works
+
+---
+
+## 📊 **Health Monitoring**
+
+### **Endpoints to Monitor:**
+- `GET /api/health` - Overall system health
+- `GET /api/auth/check` - Authentication system
+- `GET /api/github/files` - GitHub connectivity
+
+### **Expected Responses:**
 ```json
+// /api/health
 {
-  "success": true,
-  "tests": {
-    "repositoryAccess": { "success": true },
-    "targetFolder": {
-      "success": true,
-      "markdownFiles": 5  // or however many .md files you have
-    }
+  "status": "healthy",
+  "checks": {
+    "supabase": { "status": "pass" },
+    "environment": { "status": "pass" },
+    "memory": { "status": "pass" }
   }
 }
 ```
 
-## 🚨 Troubleshooting:
+---
 
-### **Issue: "Repository not found"**
-- Check if `FlamingoLogic/ObsidianSync` is public
-- If private, ensure `GITHUB_TOKEN` is set in Amplify
+## 🔄 **Rollback Plan**
 
-### **Issue: "Folder not found"**
-- Verify folder exists: `02 AbilityERP` (exact spelling)
-- Check it's in the `main` branch
+### **If Deployment Fails:**
+1. Check Amplify build logs for specific errors
+2. Revert to last known good commit:
+   ```bash
+   git revert HEAD
+   git push origin main
+   ```
+3. Fix issues in development branch
+4. Test locally before re-deploying
 
-### **Issue: "No markdown files"**
-- Confirm there are `.md` files in the `02 AbilityERP` folder
-- Files should have `.md` or `.markdown` extension
-
-## 📁 Your Repository Structure:
-```
-FlamingoLogic/ObsidianSync/
-├── main branch
-└── 02 AbilityERP/          ← Target folder
-    ├── file1.md            ← These should appear
-    ├── file2.md            ← in your documentation
-    └── subfolder/
-        └── file3.md
-```
-
-## 🎯 Success Indicators:
-- ✅ Amplify build completes without errors
-- ✅ Debug endpoint returns `"success": true`
-- ✅ Admin panel shows repository as configured
-- ✅ File explorer shows markdown files from `02 AbilityERP`
-- ✅ Can click and read markdown content
+### **Emergency Contacts:**
+- AWS Amplify Console: [Your Amplify App URL]
+- Supabase Dashboard: [Your Supabase Project URL]  
+- GitHub Repository: https://github.com/FlamingoLogic/Markdownviewerapp
 
 ---
 
-**Next Step**: Push these changes to GitHub to trigger Amplify deployment!
+## 📝 **Deployment Log Template**
 
+```
+Date: [DATE]
+Deployer: [NAME]
+Commit: [COMMIT_HASH]
+Changes: [BRIEF_DESCRIPTION]
+
+Pre-Deploy Checklist: ✅
+Build Status: ✅/❌
+Post-Deploy Tests: ✅/❌
+Issues Found: [NONE/DESCRIBE]
+Rollback Required: ✅/❌
+
+Notes: [ANY_ADDITIONAL_NOTES]
+```
+
+---
+
+## 🎯 **Success Metrics**
+
+A successful deployment should have:
+- ✅ Build time < 5 minutes
+- ✅ Zero TypeScript errors
+- ✅ Zero console errors
+- ✅ All health checks passing
+- ✅ Authentication working
+- ✅ GitHub API connectivity working
+- ✅ Mobile responsive design working
+
+---
+
+**Remember: Never deploy on Friday afternoons! 😄**
+
+*Last Updated: [Current Date]*
+*Next Review: [Monthly]*

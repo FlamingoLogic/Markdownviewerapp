@@ -1,11 +1,26 @@
 import { createClient } from '@supabase/supabase-js'
 
+// Amplify-compatible environment variable configuration
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
-// Amplify workaround: Use NEXT_PUBLIC_ prefix since server-side env vars don't work
-const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY ||
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
+// For Amplify: Use NEXT_PUBLIC_ prefix for server-side access
+const supabaseServiceKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY || 
+  process.env.SUPABASE_SERVICE_ROLE_KEY || 
   'placeholder-service-key'
+
+// Validate environment variables on startup
+if (typeof window === 'undefined') {
+  // Server-side validation
+  if (supabaseUrl === 'https://placeholder.supabase.co') {
+    console.warn('⚠️  NEXT_PUBLIC_SUPABASE_URL not configured - using fallback configuration')
+  }
+  if (supabaseAnonKey === 'placeholder-key') {
+    console.warn('⚠️  NEXT_PUBLIC_SUPABASE_ANON_KEY not configured - using fallback configuration')
+  }
+  if (supabaseServiceKey === 'placeholder-service-key') {
+    console.warn('⚠️  SUPABASE_SERVICE_ROLE_KEY not configured - using fallback configuration')
+  }
+}
 
 // Client for browser usage
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
