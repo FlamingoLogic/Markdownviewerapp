@@ -17,8 +17,9 @@ applications:
       artifacts:
         baseDirectory: .
         files:
-          - '**/*'
-          - '!node_modules/**/*'
+          - '.next/standalone/**/*'
+          - '.next/static/**/*'
+          - 'public/**/*'
       cache:
         paths:
           - node_modules/**/*
