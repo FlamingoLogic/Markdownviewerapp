@@ -11,11 +11,13 @@ HealthChecker.addHealthCheck('supabase', async () => {
 HealthChecker.addHealthCheck('environment', async () => {
   const requiredEnvVars = [
     'NEXT_PUBLIC_SUPABASE_URL',
-    'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-    'SUPABASE_SERVICE_ROLE_KEY'
+    'NEXT_PUBLIC_SUPABASE_ANON_KEY'
   ]
   
-  return requiredEnvVars.every(envVar => !!process.env[envVar])
+  // SUPABASE_SERVICE_ROLE_KEY is optional - can use NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY instead
+  const hasServiceKey = !!(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY)
+  
+  return requiredEnvVars.every(envVar => !!process.env[envVar]) && hasServiceKey
 })
 
 HealthChecker.addHealthCheck('memory', async () => {
