@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       branch,
       targetFolder,
       hasToken: !!githubToken,
-      tests: {}
+      tests: {} as any
     }
     
     // Test 1: Repository Access
