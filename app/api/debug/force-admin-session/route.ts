@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     console.log('=== FORCE ADMIN SESSION DEBUG ===')
     
     // Create an admin session
-    const adminSession = SessionService.createAdminSession()
+    const adminSession = SessionService.createSession(true)
     const sessionCookie = CookieService.createSessionCookie(adminSession)
     
     console.log('Created admin session:', adminSession)
