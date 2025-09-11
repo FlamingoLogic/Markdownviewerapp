@@ -13,10 +13,10 @@ HealthChecker.addHealthCheck('environment', async () => {
     'NEXT_PUBLIC_SUPABASE_URL',
     'NEXT_PUBLIC_SUPABASE_ANON_KEY'
   ]
-  
+
   // SUPABASE_SERVICE_ROLE_KEY is optional - can use NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY instead
   const hasServiceKey = !!(process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY)
-  
+
   return requiredEnvVars.every(envVar => !!process.env[envVar]) && hasServiceKey
 })
 
@@ -32,12 +32,12 @@ HealthChecker.addHealthCheck('memory', async () => {
 export async function GET(request: NextRequest) {
   try {
     const startTime = Date.now()
-    
+
     // Run all health checks
     const healthResult = await HealthChecker.runHealthChecks()
-    
+
     const responseTime = Date.now() - startTime
-    
+
     const healthData = {
       status: healthResult.status,
       timestamp: new Date().toISOString(),
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       healthData,
-      { 
+      {
         status: healthResult.status === 'healthy' ? 200 : 503,
         headers: {
           ...getSecurityHeaders(),
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Health check error:', error)
-    
+
     return NextResponse.json(
       {
         status: 'unhealthy',
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
         error: 'Health check failed',
         message: error instanceof Error ? error.message : 'Unknown error'
       },
-      { 
+      {
         status: 503,
         headers: {
           ...getSecurityHeaders(),
