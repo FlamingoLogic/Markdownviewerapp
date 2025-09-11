@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     
     // Create an admin session
     const adminSession = SessionService.createSession(true)
-    const sessionCookie = CookieService.createSessionCookie(adminSession)
+    const sessionCookie = CookieService.createAdminSessionCookie(adminSession)
     
     console.log('Created admin session:', adminSession)
     console.log('Session cookie:', sessionCookie)
