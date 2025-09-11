@@ -15,11 +15,12 @@ applications:
             - echo "Building Next.js application..."
             - npm run build
       artifacts:
-        baseDirectory: .
+        baseDirectory: .next
         files:
-          - '.next/standalone/**/*'
-          - '.next/static/**/*'
-          - 'public/**/*'
+          - 'standalone/**/*'
+          - 'static/**/*'
+          - 'required-server-files.json'
+          - 'package.json'
       cache:
         paths:
           - node_modules/**/*
