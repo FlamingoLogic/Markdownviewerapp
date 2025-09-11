@@ -73,10 +73,10 @@ export async function GET(request: NextRequest) {
     })
 
     let apiTests = {
-      rateLimit: { success: false, error: null, data: null as any },
-      repoAccess: { success: false, error: null, data: null as any },
-      repoContents: { success: false, error: null, data: null as any },
-      folderAccess: { success: false, error: null, data: null as any }
+      rateLimit: { success: false, error: null as string | null, data: null as any },
+      repoAccess: { success: false, error: null as string | null, data: null as any },
+      repoContents: { success: false, error: null as string | null, data: null as any },
+      folderAccess: { success: false, error: null as string | null, data: null as any }
     }
 
     // Test rate limit (checks if API is accessible)
